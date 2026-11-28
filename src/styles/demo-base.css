@@ -1,0 +1,169 @@
+@import "./demo-componentes.css";
+
+/* ==========================================================================
+   Demos / webs de clientes — superficies oscuras.
+   Un solo acento por demo, que sale del JSON (estiloAcento() en formato.ts):
+     --demo-acento, --demo-acento-texto, --demo-acento-tinte, --demo-acento-sombra
+   ========================================================================== */
+
+.demo {
+  --lienzo: #0b0d0c;
+  --superficie: #171b18;
+  --tinta: #f4f6f3;
+  --tinta-2: #c1c9c1;
+  --tinta-3: #889388;
+  --hairline: #343c36;
+  --acento: var(--demo-acento);
+  --acento-texto: var(--demo-acento-texto, #ffffff);
+  --acento-tinte: var(--demo-acento-tinte);
+  --sombra-acento: 0 6px 24px var(--demo-acento-sombra);
+
+  --sombra-card: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+  --sombra-flota: 0 12px 40px rgba(0, 0, 0, 0.12);
+  --sombra-pill: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  --r-card: 28px;
+  --r-img: 20px;
+  --r-pill: 9999px;
+  --r-sheet: 32px;
+
+  --resorte: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --foco: var(--tinta);
+  --fuente-titulo: ui-serif, Georgia, 'Times New Roman', serif;
+
+  background: var(--lienzo);
+  color: var(--tinta);
+  font-family: var(--fuente);
+  font-size: 16px;
+  letter-spacing: -0.02em;
+  line-height: 1.45;
+}
+
+.demo h1,
+.demo h2,
+.demo h3 {
+  color: var(--tinta);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+/* Columna tipo app: 480px centrada */
+.demo-app {
+  width: 100%;
+  max-width: 480px;
+  margin-inline: auto;
+  min-height: 100dvh;
+}
+
+/* Press con resorte en todo lo tocable */
+.tocable {
+  transition: transform 200ms var(--resorte);
+  -webkit-tap-highlight-color: transparent;
+}
+.tocable:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* Tarjeta flotante sin borde */
+.d-card {
+  background: var(--superficie);
+  border-radius: var(--r-card);
+  box-shadow: var(--sombra-card);
+}
+
+/* Botón principal píldora con el acento y su sombra teñida */
+.d-boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 0 24px;
+  border-radius: var(--r-pill);
+  background: var(--acento);
+  color: var(--acento-texto);
+  box-shadow: var(--sombra-acento);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.d-boton:disabled {
+  opacity: 0.45;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Botón neutro píldora */
+.d-boton-neutro {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: var(--r-pill);
+  background: var(--superficie);
+  color: var(--tinta);
+  box-shadow: var(--sombra-pill);
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* Chip píldora (categorías, filtros) */
+.d-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: var(--r-pill);
+  background: var(--superficie);
+  color: var(--tinta);
+  box-shadow: var(--sombra-pill);
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.d-chip[aria-pressed='true'],
+.d-chip[aria-current='true'],
+.d-chip.activo {
+  background: var(--acento);
+  color: var(--acento-texto);
+}
+
+/* Botón circular "+" con acento */
+.d-mas {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--acento);
+  color: var(--acento-texto);
+  box-shadow: var(--sombra-acento);
+  cursor: pointer;
+}
+
+/* Metadato / píldora gris */
+.d-pill-gris {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  background: var(--lienzo);
+  color: var(--tinta-2);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tocable:active:not(:disabled) {
+    transform: none;
+  }
+}

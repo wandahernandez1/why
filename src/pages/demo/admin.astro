@@ -1,0 +1,151 @@
+---
+import '../../styles/admin-demo.css';
+import fs from 'node:fs';
+import path from 'node:path';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import pizzeria from '../../data/pizzeria.json';
+import barberia from '../../data/barberia.json';
+import { buscarAsset, urlOptimizada } from '../../scripts/assets';
+
+// Íconos Phosphor que usa el panel (incluye los que se pintan desde el navegador), como sprite SVG
+const ICONOS = [
+  'squares-four', 'receipt', 'storefront', 'pizza', 'gear-six', 'calendar-check', 'scissors', 'users',
+  'clock', 'truck', 'phone', 'wallet', 'money', 'check', 'x', 'trash', 'caret-down', 'arrow-clockwise',
+  'package', 'user', 'map-pin', 'shopping-bag', 'list', 'arrow-left', 'eye', 'tag', 'check-circle',
+  'device-mobile', 'bank', 'currency-dollar', 'calendar', 'chat-text', 'sparkle', 'bicycle',
+  'cooking-pot', 'prohibit', 'star', 'info', 'tray', 'plus', 'arrow-up-right', 'list-bullets', 'image',
+];
+const sprite = ICONOS.map((nombre) => {
+  const ruta = path.join(process.cwd(), 'node_modules', '@phosphor-icons', 'core', 'assets', 'regular', `${nombre}.svg`);
+  if (!fs.existsSync(ruta)) throw new Error(`Icono Phosphor inexistente: "${nombre}"`);
+  const interior = fs
+    .readFileSync(ruta, 'utf8')
+    .replace(/^<svg[^>]*>/, '')
+    .replace(/<\/svg>\s*$/, '');
+  return `<symbol id="i-${nombre}" viewBox="0 0 256 256">${interior}</symbol>`;
+}).join('');
+
+// Si la foto no existe en src/assets se muestra un ícono en su lugar
+const foto = async (ruta: string, ancho: number) => (buscarAsset(ruta) ? urlOptimizada(ruta, ancho) : null);
+
+const datosAdmin = {
+  pizzeria: {
+    negocio: {
+      nombre: pizzeria.negocio.nombre,
+      nombreCorto: pizzeria.negocio.nombreCorto,
+      logoTexto: pizzeria.negocio.logoTexto,
+      direccion: pizzeria.negocio.direccion,
+      whatsapp: pizzeria.negocio.whatsapp,
+      instagram: pizzeria.negocio.instagram,
+      tiempoEntrega: pizzeria.negocio.tiempoEntrega,
+      horarios: pizzeria.negocio.horarios,
+    },
+    categorias: pizzeria.categorias.map(({ id, nombre }) => ({ id, nombre })),
+    masPedidos: pizzeria.masPedidos,
+    envio: pizzeria.envio,
+    pagos: pizzeria.pagos.map(({ id, nombre, detalle }) => ({ id, nombre, detalle })),
+    productos: await Promise.all(
+      pizzeria.productos.map(async ({ img, ...p }) => ({ ...p, foto: await foto(img, 240) })),
+    ),
+  },
+  barberia: {
+    negocio: {
+      nombre: barberia.negocio.nombre,
+      nombreCorto: barberia.negocio.nombreCorto,
+      logoTexto: barberia.negocio.logoTexto,
+      direccion: barberia.negocio.direccion,
+      whatsapp: barberia.negocio.whatsapp,
+      instagram: barberia.negocio.instagram,
+    },
+    servicios: barberia.servicios.map(({ id, nombre, precio, duracion }) => ({ id, nombre, precio, duracion })),
+    profesionales: await Promise.all(
+      barberia.profesionales.map(async ({ foto: ruta, ...p }) => ({ ...p, foto: await foto(ruta, 160) })),
+    ),
+    cualquieraDisponible: barberia.cualquieraDisponible,
+    horarios: barberia.horarios,
+    intervaloMinutos: barberia.intervaloMinutos,
+    diasCerrados: barberia.diasCerrados,
+    sena: barberia.sena,
+  },
+};
+---
+
+<BaseLayout
+  title="Panel de gestión · demo · why"
+  description="Panel de demostración para revisar los pedidos y los turnos de las demos."
+  noindex
+  themeColor="#0b0d0c"
+  estiloBody="background:#0b0d0c;color:#f4f6f3"
+>
+  <svg class="a-sprite" aria-hidden="true" focusable="false" set:html={sprite}></svg>
+
+  <div class="adm" data-adm data-menu="cerrado">
+    <div class="a-overlay" data-overlay hidden></div>
+
+    <aside class="a-side" id="a-menu" data-side aria-label="Menú del panel">
+      <div class="a-side-cab">
+        <div class="a-logo" data-logo aria-hidden="true"></div>
+        <div class="a-marca">
+          <strong data-marca></strong>
+          <span>Panel de gestión</span>
+        </div>
+        <button type="button" class="a-cerrar" data-cerrar-menu aria-label="Cerrar menú">
+          <svg class="a-ic" style="font-size:22px" aria-hidden="true"><use href="#i-x"></use></svg>
+        </button>
+      </div>
+
+      <label class="a-negocio">
+        <span>Demo</span>
+        <select data-selector>
+          <option value="pizzeria">La Esquina · Pedidos</option>
+          <option value="barberia">Barbería Norte · Turnos</option>
+        </select>
+      </label>
+
+      <nav class="a-nav" data-nav aria-label="Secciones"></nav>
+
+      <div class="a-side-pie">
+        <a class="a-btn" data-demo-publica href="/demo/pizzeria">
+          <svg class="a-ic" aria-hidden="true"><use href="#i-eye"></use></svg>
+          Ver web pública
+        </a>
+        <a class="a-btn" href="/#demos">
+          <svg class="a-ic" aria-hidden="true"><use href="#i-arrow-left"></use></svg>
+          Volver a las demos
+        </a>
+      </div>
+    </aside>
+
+    <div class="a-main" data-main>
+      <header class="a-top">
+        <button
+          type="button"
+          class="a-burger"
+          data-abrir-menu
+          aria-label="Abrir menú"
+          aria-controls="a-menu"
+          aria-expanded="false"
+        >
+          <svg class="a-ic" aria-hidden="true"><use href="#i-list"></use></svg>
+        </button>
+        <h1 data-titulo>Panel</h1>
+        <div data-acciones></div>
+      </header>
+
+      <main class="a-contenido" data-contenido></main>
+
+      <p class="a-nota">
+        <strong>Modo demostración.</strong> Los estados y registros se guardan solo en este navegador. Mercado Pago,
+        WhatsApp y las confirmaciones son simulaciones: no hay pagos ni reservas reales.
+      </p>
+    </div>
+
+    <div class="a-toast" data-toast role="status" aria-live="polite"></div>
+  </div>
+
+  <script is:inline type="application/json" id="datos-admin" set:html={JSON.stringify(datosAdmin)} />
+</BaseLayout>
+
+<script>
+  import '../../scripts/admin-demo';
+</script>

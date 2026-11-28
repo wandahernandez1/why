@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BotonPrimario from '../components/ui/BotonPrimario.astro';
+import BotonSecundario from '../components/ui/BotonSecundario.astro';
+import Logo from '../components/ui/Logo.astro';
+import site from '../data/site.json';
+---
+
+<BaseLayout title={`Página no encontrada · ${site.marca}`} description="Esta página no existe." noindex>
+  <main class="relative grid min-h-dvh place-items-center overflow-hidden px-6 text-center">
+    <div class="atmosfera" aria-hidden="true"></div>
+    <div class="relative max-w-md">
+      <Logo href="/" soloMonograma tamano={40} />
+      <p class="meta mt-8">ERROR 404</p>
+      <h1 class="h2 mx-auto mt-4">Esta página no existe.</h1>
+      <p class="mt-4">Capaz el link estaba mal escrito.</p>
+      <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+        <BotonPrimario href="/" flecha>Ir al inicio</BotonPrimario>
+        <BotonSecundario href="/#demos">Ver demos</BotonSecundario>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .atmosfera {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(60% 50% at 50% 0%, rgba(126, 24, 56, 0.45), transparent 70%);
+    pointer-events: none;
+  }
+</style>

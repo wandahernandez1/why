@@ -1,0 +1,48 @@
+---
+/** Hoja inferior del producto: foto grande, variantes (segmentado), adicionales, cantidad y "Agregar · $X". */
+import Icono from '../ui/Icono.astro';
+---
+
+<dialog class="d-hoja" id="hoja-producto" aria-labelledby="hp-titulo" data-hoja>
+  <form method="dialog" class="contents" data-hp-form>
+    <div class="d-hoja-tirador" data-arrastre aria-hidden="true"></div>
+    <div class="d-hoja-cuerpo">
+      <div class="d-foto foto" data-hp-foto>
+        <img alt="" width="440" height="440" data-hp-img />
+      </div>
+      <button type="button" class="d-cerrar cerrar-flotante" data-cerrar aria-label="Cerrar" autofocus>
+        <Icono nombre="x" peso="bold" tamano={16} />
+      </button>
+      <h2 id="hp-titulo" class="mt-5 text-[22px] leading-tight" data-hp-titulo></h2>
+      <p class="mt-2 text-[15px]" style="color:var(--tinta-2)" data-hp-desc></p>
+      <div data-hp-opciones></div>
+    </div>
+    <div class="d-hoja-pie flex items-center gap-3">
+      <div class="d-stepper" role="group" aria-label="Cantidad">
+        <button type="button" data-hp-menos aria-label="Uno menos"><Icono nombre="minus" peso="bold" tamano={16} /></button>
+        <span class="d-num" data-hp-cantidad aria-live="polite"><span>1</span></span>
+        <button type="button" data-hp-mas aria-label="Uno más"><Icono nombre="plus" peso="bold" tamano={16} /></button>
+      </div>
+      <button type="submit" class="d-boton tocable flex-1" data-hp-agregar>Agregar</button>
+    </div>
+  </form>
+</dialog>
+
+<style>
+  .foto {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 24px;
+    margin-top: 4px;
+  }
+  .foto:not(:has(img[src])) {
+    display: none;
+  }
+  .cerrar-flotante {
+    position: absolute;
+    top: 40px;
+    right: 32px;
+    background: rgba(23, 27, 24, 0.94);
+    box-shadow: var(--sombra-pill);
+  }
+</style>

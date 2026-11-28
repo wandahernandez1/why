@@ -1,0 +1,28 @@
+---
+/** Contenedor de ícono: círculo de 40px, fondo suave y borde sutil. */
+import Icono from './Icono.astro';
+
+interface Props {
+  nombre: string;
+  class?: string;
+}
+const { nombre, class: clase } = Astro.props;
+---
+
+<span class:list={['icono-caja', clase]}>
+  <Icono nombre={nombre} peso="light" tamano={20} />
+</span>
+
+<style>
+  .icono-caja {
+    display: inline-grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--vino-800);
+    border: 1px solid var(--linea);
+    color: var(--verde);
+  }
+</style>

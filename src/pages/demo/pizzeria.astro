@@ -1,0 +1,365 @@
+---
+/**
+ * Plantilla take away.
+ * Para un cliente nuevo: copiá src/data/pizzeria.json, cambiá datos/fotos/acento
+ * y apuntá el import de abajo al JSON nuevo. Nada del negocio está escrito acá.
+ */
+import '../../styles/demo-base.css';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HeroNegocio from '../../components/demos/HeroNegocio.astro';
+import Icono from '../../components/ui/Icono.astro';
+import Emoji from '../../components/demos/Emoji.astro';
+import ProductoFila from '../../components/demos/ProductoFila.astro';
+import ProductoTarjeta from '../../components/demos/ProductoTarjeta.astro';
+import HojaProducto from '../../components/demos/HojaProducto.astro';
+import Carrito from '../../components/demos/Carrito.astro';
+import PildoraWhy from '../../components/demos/PildoraWhy.astro';
+import site from '../../data/site.json';
+import data from '../../data/pizzeria.json';
+import { estiloAcento } from '../../scripts/formato';
+import { urlOptimizada } from '../../scripts/assets';
+import { CLAVES_DIA, NOMBRES_DIA } from '../../scripts/horarios';
+
+const { demo, marca, negocio, categorias, productos, envio, pagos, masPedidos } = data;
+
+// Datos para el navegador (con la URL de la foto grande ya optimizada)
+const datosCliente = {
+  slug: demo.slug,
+  numeroWhatsapp: negocio.whatsapp || site.whatsapp,
+  negocio: { nombreCorto: negocio.nombreCorto, emojiMensaje: negocio.emojiMensaje, horarios: negocio.horarios },
+  productos: await Promise.all(
+    productos.map(async ({ img, ...p }) => ({ ...p, imgGrande: await urlOptimizada(img, 800) })),
+  ),
+  envio,
+  pagos,
+};
+
+const destacados = masPedidos
+  .map((id) => productos.find((p) => p.id === id))
+  .filter((p): p is (typeof productos)[number] => !!p && p.disponible);
+const semana = [1, 2, 3, 4, 5, 6, 0].map((d) => ({
+  dia: NOMBRES_DIA[d],
+  franja: negocio.horarios[CLAVES_DIA[d] as keyof typeof negocio.horarios],
+}));
+---
+
+<BaseLayout
+  title={`${negocio.nombre} · Pedí online`}
+  description={`${negocio.eslogan}. Hacé tu pedido online y te llega por WhatsApp.`}
+  noindex
+  themeColor="#0b0d0c"
+  estiloBody="background:#0b0d0c;color:#f4f6f3"
+>
+  <div class="demo v-editorial" style={estiloAcento(marca.acento, marca.textoSobreAcento)}>
+    <div class="demo-app pb-32">
+      <a class="admin-demo" href="/demo/admin?negocio=pizzeria">Panel de gestión demo ↗</a>
+      <!-- 1. Header con foto -->
+      <HeroNegocio img={marca.heroImg} logoEmoji={marca.logoEmoji} nombre={negocio.nombre}>
+            <li class="pill" data-estado>
+              <span class="punto" aria-hidden="true"></span><span data-estado-texto>Abierto</span>
+            </li>
+            <li class="pill"><Icono nombre="clock" tamano={14} /><span class="sr-only">Entrega en </span>{negocio.tiempoEntrega}</li>
+            <li class="pill">
+              <Icono nombre="star" peso="fill" tamano={14} /><span class="sr-only">Puntaje </span>{negocio.rating.toLocaleString('es-AR')}
+              <span class="opacity-80">({negocio.resenas})</span>
+            </li>
+          </HeroNegocio>
+
+      <!-- 2. Buscador -->
+      <form role="search" class="px-5 pt-5" onsubmit="return false">
+        <label class="buscador">
+          <Icono nombre="magnifying-glass" tamano={20} />
+          <span class="sr-only">Buscar en el menú</span>
+          <input type="search" placeholder="Buscar en el menú" autocomplete="off" data-buscador />
+        </label>
+      </form>
+
+      <!-- 3. Categorías -->
+      <nav class="chips-barra" aria-label="Categorías del menú">
+        <ul class="chips" data-chips>
+          {
+            categorias.map((c, i) => (
+              <li>
+                <a href={`#cat-${c.id}`} class:list={['d-chip tocable', { activo: i === 0 }]} data-chip>
+                  <Emoji nombre={c.emoji} tamano={20} />
+                  {c.nombre}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <main>
+        <!-- 4. Los más pedidos -->
+        {
+          destacados.length > 0 && (
+            <section class="pt-6" aria-labelledby="t-mas" data-mas-pedidos>
+              <h2 id="t-mas" class="titulo-seccion px-5">Los más pedidos</h2>
+              <ul class="carrusel">
+                {destacados.map((p) => (
+                  <ProductoTarjeta producto={p} />
+                ))}
+              </ul>
+            </section>
+          )
+        }
+
+        <!-- 5. Menú por categoría -->
+        {
+          categorias.map((c) => {
+            const items = productos.filter((p) => p.categoria === c.id);
+            return (
+              items.length > 0 && (
+                <section id={`cat-${c.id}`} class="seccion-cat px-5 pt-8" aria-labelledby={`t-${c.id}`} data-cat-seccion>
+                  <h2 id={`t-${c.id}`} class="titulo-seccion flex items-center gap-2">
+                    <Emoji nombre={c.emoji} tamano={24} />
+                    {c.nombre}
+                  </h2>
+                  <ul class="space-y-3">
+                    {items.map((p) => (
+                      <ProductoFila producto={p} />
+                    ))}
+                  </ul>
+                </section>
+              )
+            );
+          })
+        }
+
+        <div class="sin-resultados px-5" data-sin-resultados hidden>
+          <Emoji nombre="lupa" tamano={56} />
+          <p class="mt-3 font-medium">No encontramos “<span data-sin-resultados-q></span>”</p>
+          <p class="text-[15px]" style="color:var(--tinta-2)">Probá con otra palabra o mirá las categorías.</p>
+        </div>
+      </main>
+
+      <footer class="mt-12 px-5 text-[14px]" style="color:var(--tinta-2)">
+        <div class="d-card p-5">
+          <p class="font-semibold" style="color:var(--tinta)">{negocio.nombreCorto}</p>
+          <p class="mt-1">{negocio.direccion}</p>
+          <dl class="mt-4 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1">
+            {
+              semana.map((s) => (
+                <>
+                  <dt>{s.dia}</dt>
+                  <dd class="tabular-nums" style="color:var(--tinta)">
+                    {s.franja ? `${s.franja.abre} a ${s.franja.cierra}` : 'Cerrado'}
+                  </dd>
+                </>
+              ))
+            }
+          </dl>
+        </div>
+      </footer>
+    </div>
+
+    <Carrito envio={envio} pagos={pagos} />
+    <HojaProducto />
+    <div class="d-toast" data-toast role="status" aria-live="polite">
+      <span data-toast-texto></span>
+      <button type="button" data-toast-deshacer>Deshacer</button>
+    </div>
+    <PildoraWhy mensaje={demo.mensajeInteres} ubicacion={`demo_${demo.slug}_pildora`} />
+  </div>
+
+  <script is:inline type="application/json" id="datos-takeaway" set:html={JSON.stringify(datosCliente)} />
+</BaseLayout>
+
+<script>
+  import '../../scripts/takeaway';
+</script>
+
+<style is:global>
+  /* Estilo editorial de la pizzería: pestañas subrayadas, filas de menú con separador
+     y ranking numerado. Sobrescribe componentes compartidos solo dentro de .v-editorial. */
+  .v-editorial .chips-barra .d-chip {
+    min-height: 40px;
+    padding: 0 4px;
+    border-radius: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    box-shadow: none;
+    color: var(--tinta-3);
+  }
+  .v-editorial .chips-barra .d-chip.activo {
+    border-bottom-color: var(--acento);
+    background: transparent;
+    color: var(--tinta);
+  }
+  .v-editorial .fila.d-card {
+    border-radius: 0;
+    border-bottom: 1px solid var(--hairline);
+    background: transparent;
+    box-shadow: none;
+  }
+  .v-editorial .fila .principal {
+    padding: 18px 0;
+    border-radius: 0;
+  }
+  .v-editorial .fila .nombre {
+    font-family: var(--fuente-titulo);
+    font-size: 19px;
+    font-weight: 500;
+  }
+  .v-editorial .fila .foto {
+    width: 96px;
+    height: 96px;
+    border-radius: 12px;
+  }
+  .v-editorial .fila .mas {
+    right: 6px;
+    bottom: 24px;
+  }
+  .v-editorial .tarjeta.d-card {
+    width: min(250px, 72vw);
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .v-editorial .tarjeta .principal {
+    padding: 0;
+    border-radius: 0;
+  }
+  .v-editorial .tarjeta .foto {
+    border-radius: 16px;
+  }
+  .v-editorial .tarjeta .nombre {
+    font-family: var(--fuente-titulo);
+    font-size: 19px;
+    padding-inline: 0;
+  }
+  .v-editorial .tarjeta .precio {
+    padding-inline: 0;
+  }
+  .v-editorial .tarjeta .mas {
+    top: calc(min(250px, 72vw) - 44px);
+    right: 10px;
+  }
+  .v-editorial .carrusel {
+    counter-reset: destacado;
+  }
+  .v-editorial .tarjeta {
+    counter-increment: destacado;
+  }
+  .v-editorial .tarjeta::before {
+    content: counter(destacado, decimal-leading-zero);
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 1;
+    padding: 4px 9px;
+    border-radius: 8px;
+    background: var(--lienzo);
+    color: var(--tinta);
+    font-family: var(--fuente-titulo);
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+  }
+  .v-editorial .d-boton {
+    border-radius: 14px;
+  }
+</style>
+<style>
+  .admin-demo {
+    display: block;
+    width: fit-content;
+    margin: 12px 20px 0 auto;
+    color: var(--tinta-2);
+    font-size: 13px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .admin-demo:hover {
+    color: var(--tinta);
+  }
+  /* ---------- Buscador ---------- */
+  .buscador {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 48px;
+    padding: 0 18px;
+    border-radius: var(--r-pill);
+    background: var(--superficie);
+    box-shadow: var(--sombra-pill);
+    color: var(--tinta-2);
+  }
+  .buscador:focus-within {
+    box-shadow: var(--sombra-pill), inset 0 0 0 2px var(--tinta);
+  }
+  .buscador input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    border: 0;
+    background: transparent;
+    color: var(--tinta);
+    font: inherit;
+    font-size: 16px;
+    outline: none;
+  }
+  .buscador input::placeholder {
+    color: var(--tinta-2);
+  }
+
+  /* ---------- Chips ---------- */
+  .chips-barra {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    padding: 12px 0;
+    background: rgba(11, 13, 12, 0.92);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+  }
+  .chips {
+    display: flex;
+    gap: 8px;
+    padding: 2px 20px 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ---------- Secciones ---------- */
+  .demo .titulo-seccion {
+    margin-bottom: 14px;
+    font-family: var(--fuente-titulo);
+    font-size: 28px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+  .buscador {
+    border-radius: 14px;
+    box-shadow: inset 0 0 0 1px var(--hairline);
+    background: transparent;
+  }
+  .seccion-cat {
+    scroll-margin-top: 72px;
+  }
+  .carrusel {
+    display: flex;
+    gap: 12px;
+    padding: 4px 20px 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 20px;
+    scrollbar-width: none;
+  }
+  .carrusel::-webkit-scrollbar {
+    display: none;
+  }
+  .sin-resultados {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 48px;
+    text-align: center;
+  }
+  .sin-resultados[hidden] {
+    display: none;
+  }
+</style>

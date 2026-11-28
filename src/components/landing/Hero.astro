@@ -1,0 +1,268 @@
+---
+import BotonPrimario from '../ui/BotonPrimario.astro';
+import BotonSecundario from '../ui/BotonSecundario.astro';
+import Icono from '../ui/Icono.astro';
+import Iphone from '../ui/Iphone.astro';
+
+interface Props {
+  mensaje: string;
+}
+const { mensaje } = Astro.props;
+---
+
+<section id="inicio" class="hero">
+  <div class="contenedor composicion">
+    <div class="mensaje">
+      <p class="eyebrow">Webs para negocios locales</p>
+      <h1 class="display mt-6">
+        Más pedidos y más turnos,<br class="salto" />{' '}
+        <span>directo a tu WhatsApp.</span>
+      </h1>
+      <p class="bajada cuerpo-g mt-7">
+        Tu web a medida, sin comisiones. Online en 7 a 15 días, con precio cerrado.
+      </p>
+
+      <div class="acciones mt-8">
+        <BotonPrimario tamano="lg" whatsapp={mensaje} ubicacion="hero" flecha class="w-full sm:w-auto">
+          Quiero mi web
+        </BotonPrimario>
+        <BotonSecundario href="#servicios" class="w-full sm:w-auto">Ver servicios</BotonSecundario>
+      </div>
+
+      <ul class="atributos" aria-label="Características del servicio">
+        <li><Icono nombre="check" peso="bold" tamano={16} /> Sin comisiones por venta</li>
+        <li><Icono nombre="check" peso="bold" tamano={16} /> Online en 7 a 15 días</li>
+        <li><Icono nombre="check" peso="bold" tamano={16} /> Atención directa</li>
+        <li><Icono nombre="check" peso="bold" tamano={16} /> Precio cerrado y pago simple</li>
+      </ul>
+    </div>
+
+    <div class="visual">
+      <span class="halo" aria-hidden="true"></span>
+      <Iphone src="/demo-iphone.html?embed=1" titulo="Demo interactiva: pedidos, turnos y landing" carga="idle" variante="hero" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: flex;
+    min-height: 640px;
+    align-items: center;
+    overflow: hidden;
+    padding: 132px 0 76px;
+    color: #f9f4ef;
+    background:
+      radial-gradient(ellipse at 79% 45%, rgba(143, 184, 87, 0.08), transparent 39%),
+      radial-gradient(ellipse at 48% 0%, rgba(105, 26, 54, 0.1), transparent 45%),
+      linear-gradient(112deg, #090b0a 0%, #151a16 54%, #090b0a 100%);
+    isolation: isolate;
+  }
+  .composicion {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    width: 100%;
+    align-items: center;
+  }
+  .mensaje {
+    max-width: 680px;
+  }
+  .hero .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: rgba(245, 238, 232, 0.9);
+    letter-spacing: 0.12em;
+    font-weight: 700;
+  }
+  .hero .eyebrow::before {
+    width: 6px;
+    height: 6px;
+    flex: 0 0 6px;
+    border-radius: 50%;
+    background: var(--verde);
+    box-shadow: 0 0 12px rgba(167, 193, 47, 0.45);
+    content: '';
+  }
+  .hero h1 {
+    max-width: 11ch;
+    font-family: var(--fuente);
+    font-weight: 800;
+    color: #fffdfa;
+    font-size: clamp(52px, 8.2vw, 92px);
+    line-height: 0.98;
+    letter-spacing: -0.052em;
+  }
+  .hero h1 span {
+    color: var(--verde);
+    text-shadow: 0 10px 36px rgba(167, 193, 47, 0.14);
+  }
+  .bajada {
+    max-width: 50ch;
+    color: rgba(255, 253, 250, 0.86);
+    font-size: 19px;
+    line-height: 1.6;
+  }
+  .acciones {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .hero :global(.btn-primario) {
+    background: var(--verde);
+    color: #10150e;
+  }
+  .hero :global(.btn-primario:hover) {
+    background: var(--verde-hover);
+    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.16);
+  }
+  .hero :global(.btn-secundario) {
+    color: #fffdfa;
+    border-color: rgba(255, 253, 250, 0.28);
+  }
+  .hero :global(.btn-secundario:hover) {
+    background: rgba(255, 253, 250, 0.08);
+    border-color: rgba(255, 253, 250, 0.48);
+  }
+  .atributos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 24px;
+    margin-top: 34px;
+    color: rgba(255, 253, 250, 0.82);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .atributos li {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    white-space: nowrap;
+  }
+  .atributos :global(svg) {
+    color: var(--verde);
+  }
+  .visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    isolation: isolate;
+  }
+  .visual :global(.iphone) {
+    --ancho: 240px;
+    --escala: 0.55;
+    transform: rotate(-4deg);
+    animation: flotar-iphone 9s ease-in-out infinite alternate;
+  }
+  .halo {
+    position: absolute;
+    z-index: -1;
+    top: 50%;
+    left: 50%;
+    width: min(85%, 390px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(174, 255, 22, 0.14), rgba(114, 195, 46, 0.05) 44%, transparent 72%);
+    filter: blur(30px);
+    transform: translate(-50%, -50%);
+  }
+  @keyframes flotar-iphone {
+    from {
+      transform: translate3d(0, 0, 0) rotate(-5deg);
+    }
+    to {
+      transform: translate3d(0, -10px, 0) rotate(-3deg);
+    }
+  }
+  @media (min-width: 640px) {
+    .hero {
+      padding-top: 148px;
+    }
+    .acciones {
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+  @media (min-width: 768px) {
+    .visual :global(.iphone) {
+      --ancho: 280px;
+      --escala: 0.65;
+    }
+  }
+  @media (min-width: 900px) {
+    .hero {
+      min-height: 100vh;
+      min-height: 100svh;
+      padding: 104px 0 28px;
+    }
+    .hero .atributos {
+      margin-top: 24px;
+    }
+    .composicion {
+      grid-template-columns: minmax(0, 1.28fr) minmax(300px, 0.72fr);
+      gap: 64px;
+    }
+    .mensaje {
+      max-width: 620px;
+    }
+    .hero h1 {
+      font-size: clamp(60px, min(6.3vw, 9vh), 88px);
+    }
+  }
+  @media (max-width: 899px) {
+    .composicion {
+      display: flex;
+      flex-direction: column;
+    }
+    .mensaje {
+      display: contents;
+    }
+    .acciones {
+      order: 4;
+    }
+    .visual {
+      order: 5;
+    }
+    .atributos {
+      order: 6;
+    }
+  }
+  @media (max-width: 639px) {
+    .hero {
+      min-height: 0;
+      padding: 126px 0 22px;
+    }
+    .visual {
+      margin-top: 18px;
+    }
+    .halo {
+      width: 80%;
+    }
+  }
+  @media (max-width: 420px) {
+    .salto {
+      display: none;
+    }
+    .hero h1 {
+      font-size: clamp(45px, 12vw, 58px);
+    }
+    .atributos {
+      gap: 10px 14px;
+      font-size: 12px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .visual :global(.iphone) {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import { iniciarIphones } from '../../scripts/iphone';
+
+  iniciarIphones();
+</script>

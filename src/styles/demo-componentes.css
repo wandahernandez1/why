@@ -1,0 +1,764 @@
+/* ==========================================================================
+   Componentes compartidos de las demos (también para HTML armado por JS).
+   Usan los tokens de .demo (demo-base.css).
+   ========================================================================== */
+
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+
+/* ---------- Hoja inferior (bottom sheet) ---------- */
+.d-hoja {
+  width: 100%;
+  max-width: 480px;
+  max-height: 92dvh;
+  margin: auto auto 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-sheet) var(--r-sheet) 0 0;
+  background: var(--superficie);
+  color: var(--tinta);
+  box-shadow: var(--sombra-flota);
+  overscroll-behavior: contain;
+}
+.d-hoja.alta {
+  height: 92dvh;
+}
+.d-hoja[open] {
+  display: flex;
+  flex-direction: column;
+  animation: hoja-entra 350ms var(--resorte);
+}
+.d-hoja.cerrando {
+  animation: hoja-sale 220ms cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+.d-hoja::backdrop {
+  background: rgba(0, 0, 0, 0.3);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  animation: fondo-entra 250ms ease;
+}
+.d-hoja.cerrando::backdrop {
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+@keyframes hoja-entra {
+  from {
+    transform: translateY(100%);
+  }
+}
+@keyframes hoja-sale {
+  to {
+    transform: translateY(100%);
+  }
+}
+@keyframes fondo-entra {
+  from {
+    opacity: 0;
+  }
+}
+.d-hoja-tirador {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  height: 24px;
+  touch-action: none;
+  cursor: grab;
+}
+.d-hoja-tirador::before {
+  content: '';
+  width: 40px;
+  height: 5px;
+  border-radius: 999px;
+  background: #69786a;
+}
+.d-hoja-cabecera {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 20px 12px;
+  touch-action: none;
+}
+.d-hoja-cuerpo {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 20px 24px;
+}
+.d-hoja-pie {
+  flex-shrink: 0;
+  padding: 12px 20px calc(16px + env(safe-area-inset-bottom));
+  background: var(--superficie);
+  box-shadow: 0 -1px 0 var(--hairline);
+}
+.d-cerrar {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--lienzo);
+  color: var(--tinta);
+  cursor: pointer;
+}
+
+/* ---------- Segmentado (claro) ---------- */
+.d-seg {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+  padding: 4px;
+  border-radius: var(--r-pill);
+  background: var(--lienzo);
+}
+.d-seg-indicador {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc((100% - 8px) / var(--n));
+  border-radius: var(--r-pill);
+  background: var(--superficie);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transform: translateX(calc(var(--i, 0) * 100%));
+  transition: transform 250ms var(--resorte);
+}
+.d-seg button {
+  position: relative;
+  z-index: 1;
+  height: 40px;
+  border-radius: var(--r-pill);
+  color: var(--tinta-2);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 200ms ease;
+}
+.d-seg button[aria-checked='true'] {
+  color: var(--tinta);
+}
+
+/* ---------- Opciones seleccionables (tarjetas con radio) ---------- */
+.d-opcion {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 60px;
+  padding: 12px 16px;
+  border-radius: 20px;
+  background: var(--superficie);
+  box-shadow: inset 0 0 0 1.5px var(--hairline);
+  cursor: pointer;
+  transition:
+    box-shadow 180ms ease,
+    background-color 180ms ease,
+    transform 200ms var(--resorte);
+}
+.d-opcion:active {
+  transform: scale(0.98);
+}
+.d-opcion:has(input:checked) {
+  box-shadow: inset 0 0 0 2px var(--acento);
+  background: var(--acento-tinte);
+}
+.d-opcion:has(input:focus-visible) {
+  outline: 2px solid var(--tinta);
+  outline-offset: 2px;
+}
+.d-opcion input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.d-opcion-icono {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: var(--lienzo);
+}
+.d-opcion-texto {
+  flex: 1;
+  min-width: 0;
+  font-size: 15px;
+  font-weight: 500;
+}
+.d-opcion-detalle {
+  display: block;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--tinta-2);
+}
+.d-opcion-precio {
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ---------- Check redondo animado (adicionales) ---------- */
+.d-fila-check {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  border-bottom: 1px solid var(--hairline);
+  cursor: pointer;
+}
+.d-fila-check:last-child {
+  border-bottom: 0;
+}
+.d-fila-check input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.d-check {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px #69786a;
+  color: var(--acento-texto);
+  transition:
+    background-color 200ms ease,
+    box-shadow 200ms ease,
+    transform 250ms var(--resorte);
+}
+.d-check svg {
+  width: 14px;
+  height: 14px;
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  transition: stroke-dashoffset 250ms ease 60ms;
+}
+.d-fila-check input:checked + .d-check {
+  background: var(--acento);
+  box-shadow: none;
+  transform: scale(1.08);
+}
+.d-fila-check input:checked + .d-check svg {
+  stroke-dashoffset: 0;
+}
+.d-fila-check input:focus-visible + .d-check {
+  outline: 2px solid var(--tinta);
+  outline-offset: 2px;
+}
+
+/* ---------- Stepper (– 1 +) con número tipo odómetro ---------- */
+.d-stepper {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 4px;
+  border-radius: var(--r-pill);
+  background: var(--lienzo);
+}
+.d-stepper.chico {
+  height: 36px;
+}
+.d-stepper button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: var(--tinta);
+  cursor: pointer;
+  transition: transform 200ms var(--resorte);
+}
+.d-stepper.chico button {
+  width: 30px;
+  height: 30px;
+}
+.d-stepper button:active {
+  transform: scale(0.85);
+}
+.d-num {
+  position: relative;
+  display: inline-block;
+  min-width: 24px;
+  height: 22px;
+  overflow: hidden;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+  font-variant-numeric: tabular-nums;
+}
+.d-num span {
+  display: block;
+}
+
+/* ---------- Campos píldora con label flotante ---------- */
+.d-campo {
+  position: relative;
+  margin-bottom: 12px;
+}
+.d-campo input {
+  width: 100%;
+  height: 56px;
+  padding: 22px 20px 6px;
+  border-radius: var(--r-pill);
+  border: 0;
+  background: var(--lienzo);
+  color: var(--tinta);
+  font: inherit;
+  font-size: 16px;
+  letter-spacing: -0.01em;
+  transition: box-shadow 180ms ease;
+}
+.d-campo label {
+  position: absolute;
+  left: 20px;
+  top: 18px;
+  color: var(--tinta-2);
+  font-size: 16px;
+  pointer-events: none;
+  transform-origin: 0 0;
+  transition:
+    transform 180ms ease,
+    color 180ms ease;
+}
+.d-campo input:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--tinta);
+}
+.d-campo input:focus + label,
+.d-campo input:not(:placeholder-shown) + label {
+  transform: translateY(-11px) scale(0.75);
+}
+.d-campo input[aria-invalid='true'] {
+  box-shadow: inset 0 0 0 2px #c4321f;
+}
+.d-error {
+  padding: 6px 20px 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: #ff9f96;
+}
+
+/* ---------- Bloques del checkout ---------- */
+.d-bloque {
+  padding-top: 24px;
+}
+.d-bloque-titulo {
+  margin-bottom: 12px;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.d-progreso {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--lienzo);
+  overflow: hidden;
+}
+.d-progreso span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--acento);
+  transition: width 300ms ease;
+}
+
+/* ---------- Carrito flotante ---------- */
+.d-carrito {
+  position: fixed;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(448px, calc(100% - 32px));
+  height: 60px;
+  padding: 0 20px 0 8px;
+  border-radius: var(--r-pill);
+  background: #28332a;
+  color: #fff;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+  font-size: 15px;
+  font-weight: 500;
+  transform: translateY(140%);
+  transition: transform 400ms var(--resorte);
+  cursor: pointer;
+}
+.d-carrito.visible {
+  transform: none;
+}
+.d-carrito.visible:active {
+  transform: scale(0.98);
+}
+.d-carrito-icono {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+}
+.d-carrito-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--acento);
+  color: var(--acento-texto);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 20px;
+  text-align: center;
+}
+.d-carrito-badge.rebote {
+  animation: rebote 400ms var(--resorte);
+}
+@keyframes rebote {
+  40% {
+    transform: scale(1.35);
+  }
+}
+
+/* ---------- Línea del pedido ---------- */
+.d-linea {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+/* ---------- Toast píldora ---------- */
+.d-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(92px + env(safe-area-inset-bottom));
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: calc(100% - 32px);
+  padding: 8px 8px 8px 20px;
+  border-radius: var(--r-pill);
+  background: #28332a;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: var(--sombra-flota);
+  transform: translate(-50%, 16px);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 200ms ease,
+    transform 300ms var(--resorte);
+}
+.d-toast.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+}
+.d-toast button {
+  padding: 8px 14px;
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ---------- Foto con esqueleto mientras carga ---------- */
+.d-foto {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, #1c201d 0%, #303831 50%, #1c201d 100%);
+  background-size: 200% 100%;
+  animation: d-brillo 1.4s ease-in-out infinite;
+}
+.d-foto.cargada {
+  animation: none;
+  background: var(--lienzo);
+}
+.d-foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 250ms ease;
+}
+.d-foto.cargada img,
+html:not(.js) .d-foto img {
+  opacity: 1;
+}
+@keyframes d-brillo {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* ---------- Emoji 3D ---------- */
+.d-emoji {
+  display: inline-block;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+/* ---------- Pantalla de éxito: check que se dibuja ---------- */
+.d-check-grande circle {
+  stroke-dasharray: 160;
+  stroke-dashoffset: 160;
+  animation: dibujar 500ms ease forwards;
+}
+.d-check-grande path {
+  stroke-dasharray: 50;
+  stroke-dashoffset: 50;
+  animation: dibujar 350ms ease 400ms forwards;
+}
+@keyframes dibujar {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ==========================================================================
+   Plantilla de turnos
+   ========================================================================== */
+
+/* Tarjeta elegible (servicio / profesional) con anillo de acento + check */
+.d-eleccion {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 16px;
+  border-radius: var(--r-card);
+  background: var(--superficie);
+  box-shadow: var(--sombra-card);
+  color: var(--tinta);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    box-shadow 200ms ease,
+    transform 200ms var(--resorte);
+}
+.d-eleccion.vertical {
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding: 20px 12px;
+  text-align: center;
+}
+.d-eleccion[aria-pressed='true'] {
+  box-shadow:
+    inset 0 0 0 2px var(--acento),
+    var(--sombra-card);
+}
+.d-eleccion-check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--acento);
+  color: var(--acento-texto);
+  transform: scale(0);
+  transition: transform 250ms var(--resorte);
+}
+.d-eleccion[aria-pressed='true'] .d-eleccion-check {
+  transform: scale(1);
+}
+
+/* Indicador de pasos tipo "historias" */
+.d-pasos {
+  display: flex;
+  gap: 4px;
+}
+.d-pasos span {
+  flex: 1;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--hairline);
+}
+.d-pasos span::after {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: var(--acento);
+  transition: width 350ms ease;
+}
+.d-pasos span[data-lleno='true']::after {
+  width: 100%;
+}
+
+/* Botón atrás circular */
+.d-atras {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--superficie);
+  box-shadow: var(--sombra-pill);
+  color: var(--tinta);
+  cursor: pointer;
+  transition:
+    opacity 200ms ease,
+    transform 200ms var(--resorte);
+}
+.d-atras:active {
+  transform: scale(0.9);
+}
+.d-atras[disabled] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Chip vertical de día */
+.d-dia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 60px;
+  height: 72px;
+  flex-shrink: 0;
+  border-radius: 20px;
+  background: var(--superficie);
+  box-shadow: var(--sombra-pill);
+  color: var(--tinta);
+  scroll-snap-align: start;
+  cursor: pointer;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    transform 200ms var(--resorte);
+}
+.d-dia:active:not(:disabled) {
+  transform: scale(0.94);
+}
+.d-dia-semana {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--tinta-2);
+  text-transform: capitalize;
+}
+.d-dia-numero {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.d-dia[aria-pressed='true'] {
+  background: var(--acento);
+  color: var(--acento-texto);
+}
+.d-dia[aria-pressed='true'] .d-dia-semana {
+  color: var(--acento-texto);
+}
+.d-dia:disabled {
+  cursor: not-allowed;
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--hairline);
+}
+.d-dia:disabled .d-dia-numero,
+.d-dia:disabled .d-dia-semana {
+  color: var(--tinta-3);
+  text-decoration: line-through;
+}
+
+/* Grupos de horarios */
+.d-grupo-horas + .d-grupo-horas {
+  margin-top: 20px;
+}
+.d-grupo-titulo {
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--tinta-2);
+}
+.d-horas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.d-hora {
+  height: 44px;
+  border-radius: var(--r-pill);
+  background: var(--superficie);
+  box-shadow: var(--sombra-pill);
+  color: var(--tinta);
+  font-size: 15px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition:
+    background-color 200ms ease,
+    transform 200ms var(--resorte);
+  animation: hora-entra 300ms var(--resorte) both;
+  animation-delay: calc(var(--i, 0) * 25ms);
+}
+.d-hora:active:not(:disabled) {
+  transform: scale(0.94);
+}
+.d-hora[aria-pressed='true'] {
+  background: var(--acento);
+  color: var(--acento-texto);
+  box-shadow: var(--sombra-acento);
+}
+.d-hora:disabled {
+  background: transparent;
+  box-shadow: none;
+  color: var(--tinta-3);
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+@keyframes hora-entra {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.96);
+  }
+}
+
+/* ---------- Modo embebido (iPhone de la landing) ---------- */
+html.embebido [data-pildora-why] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d-hoja[open],
+  .d-hoja.cerrando,
+  .d-foto,
+  .d-carrito-badge.rebote,
+  .d-hora {
+    animation: none;
+  }
+  .d-check-grande path,
+  .d-check-grande circle {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}

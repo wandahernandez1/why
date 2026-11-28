@@ -1,0 +1,179 @@
+---
+import Logo from './Logo.astro';
+import BotonPrimario from './BotonPrimario.astro';
+
+interface Props {
+  mensaje: string;
+  /** En páginas internas los links apuntan a la home */
+  base?: string;
+  variante?: 'base' | 'hero';
+}
+
+const { mensaje, base = '', variante = 'base' } = Astro.props;
+
+const links = [
+  { href: `${base}#servicios`, texto: 'Servicios' },
+  { href: `${base}#demos`, texto: 'Demos' },
+  { href: `${base}#proceso`, texto: 'Proceso' },
+  { href: `${base}#preguntas`, texto: 'Preguntas' },
+];
+---
+
+<header class:list={['nav-envoltura', { 'nav-envoltura-hero': variante === 'hero' }]}>
+  <nav class:list={['nav', { 'nav-hero': variante === 'hero' }]} aria-label="Navegación principal">
+    <Logo href={base || '#inicio'} tamano={60} class="logo-nav" />
+    <ul class="links">
+      {
+        links.map((l) => (
+          <li>
+            <a href={l.href}>{l.texto}</a>
+          </li>
+        ))
+      }
+    </ul>
+    <BotonPrimario tamano="sm" whatsapp={mensaje} ubicacion="nav">Escribime</BotonPrimario>
+  </nav>
+</header>
+
+<style>
+  .nav-envoltura {
+    position: fixed;
+    top: 14px;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    padding-inline: 16px;
+    pointer-events: none;
+  }
+  .nav-envoltura-hero {
+    top: 0;
+    padding-inline: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(11, 13, 12, 0.85);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+  }
+  .nav {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    max-width: 1160px;
+    height: 72px;
+    margin-inline: auto;
+    padding: 8px 12px;
+    border: 1px solid var(--linea);
+    border-radius: 20px;
+    background: rgba(20, 23, 21, 0.96);
+    -webkit-backdrop-filter: blur(20px) saturate(135%);
+    backdrop-filter: blur(20px) saturate(135%);
+    box-shadow: 0 12px 36px rgba(28, 8, 16, 0.2), 0 2px 6px rgba(28, 8, 16, 0.08);
+  }
+  .logo-nav {
+    flex: 0 0 auto;
+    margin-left: -2px;
+  }
+  .nav :global(.logo-imagen) {
+    height: 52px;
+  }
+  .links {
+    display: none;
+    align-items: center;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding-inline: 13px;
+    border-radius: 999px;
+    color: var(--texto-2);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition:
+      color 180ms var(--ease),
+      background-color 180ms var(--ease);
+  }
+  .links a:hover {
+    color: var(--texto-1);
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .nav :global(.btn-primario) {
+    flex: 0 0 auto;
+    min-height: 40px;
+    padding-inline: 18px;
+    border-radius: 999px;
+    background: var(--verde);
+    color: #10150e;
+    box-shadow: 0 3px 8px rgba(84, 24, 45, 0.18);
+  }
+  .nav :global(.btn-primario:hover) {
+    background: var(--verde-hover);
+    box-shadow: 0 5px 14px rgba(84, 24, 45, 0.2);
+  }
+  .nav-hero {
+    width: 100%;
+    border-color: transparent;
+    border-radius: 0;
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+  .nav-hero .logo-nav {
+    padding: 2px 5px;
+    border-radius: 12px;
+    background: rgba(255, 253, 250, 0.9);
+  }
+  .nav-hero :global(.logo-imagen) {
+    height: 42px;
+  }
+  .nav-hero .links a {
+    padding-inline: 11px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #fffdfa;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-shadow: 0 1px 2px rgba(53, 16, 31, 0.95), 0 0 8px rgba(53, 16, 31, 0.85);
+    text-transform: uppercase;
+  }
+  .nav-hero .links a:hover {
+    color: var(--verde);
+    background: transparent;
+  }
+  .nav-hero :global(.btn-primario) {
+    background: var(--verde);
+    color: #10150e;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.18);
+  }
+  .nav-hero :global(.btn-primario:hover) {
+    background: var(--verde-hover);
+    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.2);
+  }
+  @media (min-width: 768px) {
+    .nav {
+      height: 82px;
+      padding-inline: 18px;
+    }
+    .nav-hero {
+      padding-inline: 18px;
+    }
+    .nav :global(.logo-imagen) {
+      height: 64px;
+    }
+    .nav-hero :global(.logo-imagen) {
+      height: 48px;
+    }
+    .links {
+      display: flex;
+    }
+  }
+</style>

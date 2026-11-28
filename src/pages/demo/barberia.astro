@@ -1,0 +1,398 @@
+---
+/**
+ * Plantilla de turnos.
+ * Para un cliente nuevo: copiá src/data/barberia.json, cambiá datos/fotos/acento
+ * y apuntá el import de abajo al JSON nuevo. Nada del negocio está escrito acá.
+ */
+import '../../styles/demo-base.css';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icono from '../../components/ui/Icono.astro';
+import Emoji from '../../components/demos/Emoji.astro';
+import HeroNegocio from '../../components/demos/HeroNegocio.astro';
+import SelectorServicio from '../../components/demos/SelectorServicio.astro';
+import SelectorProfesional from '../../components/demos/SelectorProfesional.astro';
+import SelectorHorario from '../../components/demos/SelectorHorario.astro';
+import ResumenReserva from '../../components/demos/ResumenReserva.astro';
+import PildoraWhy from '../../components/demos/PildoraWhy.astro';
+import site from '../../data/site.json';
+import data from '../../data/barberia.json';
+import { estiloAcento, sinCorchetes } from '../../scripts/formato';
+import { CLAVES_DIA, NOMBRES_DIA } from '../../scripts/horarios';
+
+const { demo, mensaje, marca, negocio, opiniones, servicios, profesionales, cualquieraDisponible, horarios, sena } =
+  data;
+
+const datosCliente = {
+  slug: demo.slug,
+  numeroWhatsapp: negocio.whatsapp || site.whatsapp,
+  nombreCorto: negocio.nombreCorto,
+  direccion: negocio.direccion,
+  mensaje,
+  servicios: servicios.map(({ emoji, ...s }) => s),
+  profesionales: profesionales.map(({ id, nombre, servicios }) => ({ id, nombre, servicios })),
+  cualquieraDisponible,
+  horarios,
+  intervaloMinutos: data.intervaloMinutos,
+  diasCerrados: data.diasCerrados,
+  turnosOcupados: data.turnosOcupados,
+  sena,
+};
+
+const semana = [1, 2, 3, 4, 5, 6, 0].map((d) => ({
+  dia: NOMBRES_DIA[d],
+  franja: horarios[CLAVES_DIA[d] as keyof typeof horarios],
+}));
+const instagram = sinCorchetes(negocio.instagram);
+---
+
+<BaseLayout
+  title={`${negocio.nombre} · Sacá tu turno online`}
+  description={`${negocio.eslogan}. Reservá tu turno online en 3 toques.`}
+  noindex
+  themeColor="#0b0d0c"
+  estiloBody="background:#0b0d0c;color:#f4f6f3"
+>
+  <div class="demo v-editorial" style={estiloAcento(marca.acento, marca.textoSobreAcento)}>
+    <div class="demo-app pb-32">
+      <a class="admin-demo" href="/demo/admin?negocio=barberia">Panel de gestión demo ↗</a>
+      <HeroNegocio img={marca.heroImg} logoEmoji={marca.logoEmoji} nombre={negocio.nombre}>
+        <li class="pill" data-estado>
+          <span class="punto" aria-hidden="true"></span><span data-estado-texto>Abierto</span>
+        </li>
+        <li class="pill">
+          <Icono nombre="star" peso="fill" tamano={14} /><span class="sr-only">Puntaje </span>{negocio.rating.toLocaleString('es-AR')}
+          <span class="opacity-80">({negocio.resenas})</span>
+        </li>
+      </HeroNegocio>
+
+      <main>
+        <!-- Reserva en 4 pasos -->
+        <section class="reserva" data-reserva aria-labelledby="paso-titulo">
+          <div class="barra">
+            <button type="button" class="d-atras" data-atras aria-label="Volver al paso anterior" disabled>
+              <Icono nombre="caret-left" peso="bold" tamano={18} />
+            </button>
+            <div class="d-pasos flex-1" data-pasos aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+          </div>
+          <p class="mt-5 text-[13px] font-medium" style="color:var(--tinta-2)" data-paso-texto aria-live="polite">Paso 1 de 4</p>
+          <h2 id="paso-titulo" class="paso-titulo" tabindex="-1" data-paso-titulo>¿Qué te hacés?</h2>
+
+          <div class="mt-4" data-paso="1">
+            <SelectorServicio servicios={servicios} />
+            {
+              opiniones.length > 0 && (
+                <section class="mt-8" aria-labelledby="t-opiniones">
+                  <h3 id="t-opiniones" class="text-[17px] font-semibold tracking-tight">
+                    Lo que dicen
+                  </h3>
+                  <ul class="opiniones">
+                    {opiniones.map((o) => (
+                      <li class="d-card opinion">
+                        <span class="estrellas" role="img" aria-label={`${o.estrellas} de 5 estrellas`}>
+                          {Array.from({ length: o.estrellas }, () => (
+                            <Icono nombre="star" peso="fill" tamano={14} />
+                          ))}
+                        </span>
+                        <p class="mt-2 text-[15px] leading-snug">“{o.texto}”</p>
+                        <p class="mt-2 text-[13px]" style="color:var(--tinta-2)">
+                          {o.nombre}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )
+            }
+          </div>
+
+          <div class="mt-4" data-paso="2" hidden>
+            <SelectorProfesional profesionales={profesionales} cualquiera={cualquieraDisponible} />
+          </div>
+
+          <div class="mt-4" data-paso="3" hidden>
+            <SelectorHorario />
+          </div>
+
+          <div class="mt-4" data-paso="4" hidden>
+            <ResumenReserva />
+            <form class="mt-6" data-form-datos novalidate>
+              <div class="d-campo">
+                <input id="t-nombre" name="nombre" autocomplete="name" placeholder=" " aria-describedby="err-t-nombre" />
+                <label for="t-nombre">Nombre y apellido</label>
+                <p class="d-error" id="err-t-nombre" hidden></p>
+              </div>
+              <div class="d-campo">
+                <input
+                  id="t-celular"
+                  name="celular"
+                  type="tel"
+                  inputmode="tel"
+                  autocomplete="tel"
+                  placeholder=" "
+                  aria-describedby="err-t-celular"
+                />
+                <label for="t-celular">Celular (con código de área)</label>
+                <p class="d-error" id="err-t-celular" hidden></p>
+              </div>
+              {sena.activa && <p class="sena">{sena.texto}.</p>}
+              <button type="submit" class="d-boton tocable mt-4 w-full">
+                <Icono nombre="whatsapp-logo" tamano={20} />
+                Reservar por WhatsApp
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- Éxito -->
+        <section class="exito" data-exito hidden aria-labelledby="exito-titulo">
+          <div class="sello">
+            <svg class="d-check-grande" viewBox="0 0 56 56" width="96" height="96" aria-hidden="true">
+              <circle cx="28" cy="28" r="26" fill="none" stroke="var(--acento)" stroke-width="2" stroke-linecap="round"
+              ></circle>
+            </svg>
+            <Emoji nombre="exito" tamano={56} />
+          </div>
+          <h2 id="exito-titulo" class="mt-4 text-[26px]" tabindex="-1" data-exito-titulo>¡Listo!</h2>
+          <p class="mt-2 text-[15px]" style="color:var(--tinta-2)" data-exito-resumen></p>
+          <p class="mt-1 text-[15px]" style="color:var(--tinta-2)">
+            Se abrió WhatsApp con tu reserva. Enviala y te confirman por ahí.
+          </p>
+          <div class="mt-8 flex w-full flex-col gap-3">
+            <a class="d-boton tocable" href="#" target="_blank" rel="noopener" data-exito-whatsapp>
+              <Icono nombre="whatsapp-logo" tamano={20} />
+              Abrir WhatsApp
+            </a>
+            <button type="button" class="d-boton-neutro tocable" data-calendario>
+              <Icono nombre="calendar-plus" tamano={20} />
+              Agregar al calendario
+            </button>
+            <button type="button" class="otro" data-otro-turno>Sacar otro turno</button>
+          </div>
+        </section>
+      </main>
+
+      <footer class="mt-12 px-5 text-[14px]" style="color:var(--tinta-2)">
+        <div class="d-card p-5">
+          <p class="font-semibold" style="color:var(--tinta)">{negocio.nombreCorto}</p>
+          <p class="mt-1">{negocio.direccion}</p>
+          <dl class="mt-4 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1">
+            {
+              semana.map((s) => (
+                <>
+                  <dt>{s.dia}</dt>
+                  <dd class="tabular-nums" style="color:var(--tinta)">
+                    {s.franja ? `${s.franja.abre} a ${s.franja.cierra}` : 'Cerrado'}
+                  </dd>
+                </>
+              ))
+            }
+          </dl>
+          {
+            instagram && (
+              <a href={instagram} target="_blank" rel="noopener" class="ig">
+                <Icono nombre="instagram-logo" tamano={18} />
+                Instagram
+              </a>
+            )
+          }
+        </div>
+      </footer>
+    </div>
+
+    <PildoraWhy mensaje={demo.mensajeInteres} ubicacion={`demo_${demo.slug}_pildora`} />
+  </div>
+
+  <style is:global>
+  /* Estilo editorial del turno: títulos serif, filas con separador y sin tarjetas flotantes.
+     Sobrescribe los componentes compartidos solo dentro de .v-editorial. */
+  .v-editorial .paso-titulo,
+  .v-editorial .exito h2 {
+    font-family: var(--fuente-titulo);
+    font-size: 34px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .v-editorial .d-eleccion {
+    gap: 16px;
+    padding: 18px 0;
+    border-radius: 0;
+    border-bottom: 1px solid var(--hairline);
+    background: transparent;
+    box-shadow: none;
+  }
+  .v-editorial .d-eleccion[aria-pressed='true'] {
+    box-shadow: none;
+    padding-inline: 14px;
+    border-radius: 14px;
+    border-bottom-color: transparent;
+    background: var(--acento-tinte);
+  }
+  .v-editorial .d-eleccion-check {
+    display: none;
+  }
+  .v-editorial .d-dia {
+    width: 58px;
+    height: 84px;
+    border-radius: 14px;
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--hairline);
+  }
+  .v-editorial .d-dia[aria-pressed='true'] {
+    box-shadow: none;
+  }
+  .v-editorial .d-dia-semana {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .v-editorial .d-dia-numero {
+    font-family: var(--fuente-titulo);
+    font-size: 24px;
+    font-weight: 500;
+  }
+  .v-editorial .d-grupo-titulo {
+    font-family: var(--fuente-titulo);
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--tinta);
+  }
+  .v-editorial .d-horas {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .v-editorial .d-hora {
+    height: 42px;
+    border-radius: 10px;
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--hairline);
+  }
+  .v-editorial .d-hora[aria-pressed='true'] {
+    box-shadow: none;
+  }
+  .v-editorial .d-boton {
+    border-radius: 14px;
+  }
+  .v-editorial div.ticket {
+    border-radius: 6px;
+  }
+</style>
+
+<script is:inline type="application/json" id="datos-turnos" set:html={JSON.stringify(datosCliente)} />
+</BaseLayout>
+
+<script>
+  import '../../scripts/turnos';
+</script>
+
+<style>
+  .admin-demo {
+    display: block;
+    width: fit-content;
+    margin: 12px 20px 0 auto;
+    color: var(--tinta-2);
+    font-size: 13px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .admin-demo:hover {
+    color: var(--tinta);
+  }
+  .reserva {
+    padding: 20px 20px 0;
+    scroll-margin-top: 8px;
+  }
+  .barra {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-inline: -20px;
+    padding: 10px 20px;
+    background: rgba(11, 13, 12, 0.92);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+  }
+  .demo .paso-titulo {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+  .paso-titulo:focus {
+    outline: none;
+  }
+  .opiniones {
+    display: flex;
+    gap: 12px;
+    margin: 12px -20px 0;
+    padding: 4px 20px 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 20px;
+    scrollbar-width: none;
+  }
+  .opiniones::-webkit-scrollbar {
+    display: none;
+  }
+  .opinion {
+    flex-shrink: 0;
+    width: 260px;
+    padding: 16px 18px;
+    border-radius: 22px;
+    scroll-snap-align: start;
+  }
+  .estrellas {
+    display: flex;
+    gap: 2px;
+    color: var(--acento);
+  }
+  .sena {
+    padding: 14px 18px;
+    border-radius: 18px;
+    background: var(--acento-tinte);
+    font-size: 14px;
+  }
+  .exito {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 20px 0;
+    text-align: center;
+  }
+  .exito[hidden] {
+    display: none;
+  }
+  .exito h2:focus {
+    outline: none;
+  }
+  .sello {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 96px;
+    height: 96px;
+  }
+  .sello svg {
+    position: absolute;
+    inset: 0;
+    transform: rotate(-90deg);
+  }
+  .otro {
+    height: 44px;
+    color: var(--tinta-2);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+  .ig {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 16px;
+    color: var(--tinta);
+    font-weight: 500;
+  }
+</style>

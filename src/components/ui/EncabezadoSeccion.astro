@@ -1,0 +1,55 @@
+---
+/**
+ * Encabezado de sección con el ritmo fijo del sistema:
+ * eyebrow → 16px → H2 → 16px → bajada (1 línea en desktop) → 48px → contenido.
+ * Centrado. Asegura el mismo ritmo vertical en todas las secciones.
+ */
+interface Props {
+  eyebrow: string;
+  titulo: string;
+  bajada?: string;
+  id?: string;
+  alineacion?: 'centro' | 'izquierda';
+}
+const { eyebrow, titulo, bajada, id, alineacion = 'centro' } = Astro.props;
+---
+
+<header class:list={['encabezado', { izquierda: alineacion === 'izquierda' }]} data-reveal>
+  <p class="eyebrow">{eyebrow}</p>
+  <h2 class="h2 mt-4" id={id}>{titulo}</h2>
+  {bajada && <p class="cuerpo-g parrafo mt-4">{bajada}</p>}
+</header>
+
+<style>
+  .encabezado {
+    margin-bottom: 48px;
+    text-align: center;
+  }
+  .encabezado.izquierda {
+    max-width: 760px;
+    text-align: left;
+  }
+  .encabezado.izquierda h2 {
+    max-width: 16ch;
+    margin-inline: 0;
+    color: var(--texto-1);
+    font-size: clamp(38px, 5vw, 52px);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.045em;
+  }
+  .encabezado.izquierda .parrafo {
+    max-width: 54ch;
+    margin-inline: 0;
+    color: var(--texto-2);
+  }
+  .encabezado.izquierda .eyebrow {
+    color: var(--verde);
+    font-weight: 700;
+  }
+  @media (max-width: 639px) {
+    .encabezado.izquierda h2 {
+      font-size: 38px;
+    }
+  }
+</style>

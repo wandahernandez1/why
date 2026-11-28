@@ -1,0 +1,272 @@
+---
+/**
+ * Carrito flotante (píldora) + checkout en hoja a pantalla casi completa:
+ * Tu pedido · Entrega · Pago · Datos · mínimo · totales · enviar. Después, pantalla de éxito.
+ * Zonas y pagos salen del JSON; la lógica está en takeaway.ts.
+ */
+import Icono from '../ui/Icono.astro';
+import Emoji from './Emoji.astro';
+import { formatearARS } from '../../scripts/formato';
+
+interface Props {
+  envio: {
+    zonas: { id: string; nombre: string; detalle: string; costo: number }[];
+    retiro: { habilitado: boolean; nombre: string };
+    pedidoMinimo: number;
+  };
+  pagos: { id: string; nombre: string; detalle: string; icono?: string }[];
+}
+const { envio, pagos } = Astro.props;
+const conRetiro = envio.retiro.habilitado;
+---
+
+<button type="button" class="d-carrito tocable" data-abrir-carrito aria-haspopup="dialog" aria-label="Ver pedido" inert>
+  <span class="d-carrito-icono">
+    <Icono nombre="shopping-bag" tamano={22} />
+    <span class="d-carrito-badge" data-carrito-cantidad>0</span>
+  </span>
+  <span class="flex-1 text-left" data-carrito-texto>Ver pedido</span>
+  <span class="font-semibold tabular-nums" data-carrito-total>$ 0</span>
+</button>
+
+<dialog class="d-hoja alta" id="hoja-carrito" aria-labelledby="carrito-titulo" data-hoja>
+  <div class="d-hoja-tirador" data-arrastre aria-hidden="true"></div>
+  <div class="d-hoja-cabecera" data-arrastre>
+    <h2 id="carrito-titulo" class="text-[22px]">Tu pedido</h2>
+    <button type="button" class="d-cerrar" data-cerrar aria-label="Cerrar" autofocus>
+      <Icono nombre="x" peso="bold" tamano={16} />
+    </button>
+  </div>
+
+  <!-- Checkout -->
+  <form class="contents" data-checkout novalidate>
+    <div class="d-hoja-cuerpo">
+      <p class="aviso" data-aviso-cerrado hidden></p>
+      <ul data-lista></ul>
+      <div class="vacio" data-vacio hidden>
+        <Emoji nombre="bolsa" tamano={56} />
+        <p class="mt-3 font-medium">Tu pedido está vacío</p>
+        <p class="text-sm" style="color:var(--tinta-2)">Elegí algo rico del menú.</p>
+      </div>
+
+      <section class="d-bloque" aria-labelledby="b-entrega">
+        <h3 id="b-entrega" class="d-bloque-titulo">Entrega</h3>
+        {
+          conRetiro && (
+            <div class="d-seg" role="radiogroup" aria-labelledby="b-entrega" style="--n:2" data-seg-entrega>
+              <span class="d-seg-indicador" aria-hidden="true" />
+              <button type="button" role="radio" aria-checked="true" data-valor="envio">
+                Envío
+              </button>
+              <button type="button" role="radio" aria-checked="false" data-valor="retiro">
+                Retiro
+              </button>
+            </div>
+          )
+        }
+        <input type="hidden" name="entrega" value="envio" />
+        <div class="mt-3 space-y-2" data-grupo-envio role="radiogroup" aria-label="Zona de envío" aria-describedby="err-zona">
+          {
+            envio.zonas.map((z) => (
+              <label class="d-opcion">
+                <input type="radio" name="zona" value={z.id} />
+                <span class="d-opcion-icono">
+                  <Icono nombre="motorcycle" tamano={20} />
+                </span>
+                <span class="d-opcion-texto">
+                  {z.nombre}
+                  {z.detalle && <span class="d-opcion-detalle">{z.detalle}</span>}
+                </span>
+                <span class="d-opcion-precio">{formatearARS(z.costo)}</span>
+              </label>
+            ))
+          }
+          <p class="d-error" id="err-zona" hidden></p>
+        </div>
+        {
+          conRetiro && (
+            <p class="retiro mt-3" data-grupo-retiro hidden>
+              <Icono nombre="storefront" tamano={20} />
+              <span>
+                {envio.retiro.nombre} · <span style="color:var(--tinta-2)">sin costo</span>
+              </span>
+            </p>
+          )
+        }
+      </section>
+
+      <section class="d-bloque" aria-labelledby="b-pago">
+        <h3 id="b-pago" class="d-bloque-titulo">Pago</h3>
+        <div class="space-y-2" role="radiogroup" aria-labelledby="b-pago" aria-describedby="err-pago">
+          {
+            pagos.map((p) => (
+              <label class="d-opcion">
+                <input type="radio" name="pago" value={p.id} />
+                <span class="d-opcion-icono">
+                  <Icono nombre={p.icono ?? 'money'} tamano={20} />
+                </span>
+                <span class="d-opcion-texto">
+                  {p.nombre}
+                  {p.detalle && <span class="d-opcion-detalle">{p.detalle}</span>}
+                </span>
+              </label>
+            ))
+          }
+          <p class="d-error" id="err-pago" hidden></p>
+        </div>
+      </section>
+
+      <section class="d-bloque" aria-labelledby="b-datos">
+        <h3 id="b-datos" class="d-bloque-titulo">Tus datos</h3>
+        <div class="d-campo">
+          <input id="ck-nombre" name="nombre" autocomplete="name" placeholder=" " aria-describedby="err-nombre" />
+          <label for="ck-nombre">Nombre</label>
+          <p class="d-error" id="err-nombre" hidden></p>
+        </div>
+        <div class="d-campo">
+          <input
+            id="ck-celular"
+            name="celular"
+            type="tel"
+            inputmode="tel"
+            autocomplete="tel"
+            placeholder=" "
+            aria-describedby="err-celular"
+          />
+          <label for="ck-celular">Celular (con código de área)</label>
+          <p class="d-error" id="err-celular" hidden></p>
+        </div>
+        <div class="d-campo" data-campo-direccion>
+          <input
+            id="ck-direccion"
+            name="direccion"
+            autocomplete="street-address"
+            placeholder=" "
+            aria-describedby="err-direccion"
+          />
+          <label for="ck-direccion">Dirección (calle, número, depto)</label>
+          <p class="d-error" id="err-direccion" hidden></p>
+        </div>
+        <div class="d-campo">
+          <input id="ck-comentario" name="comentario" placeholder=" " />
+          <label for="ck-comentario">Nota para el local (opcional)</label>
+        </div>
+      </section>
+    </div>
+
+    <div class="d-hoja-pie">
+      <div class="mb-3" data-minimo hidden>
+        <p class="mb-2 text-sm font-medium" data-minimo-texto></p>
+        <div class="d-progreso"><span data-minimo-barra style="width:0%"></span></div>
+      </div>
+      <dl class="mb-3 space-y-1 text-[15px]">
+        <div class="flex justify-between" style="color:var(--tinta-2)">
+          <dt>Subtotal</dt><dd class="tabular-nums" data-subtotal>$ 0</dd>
+        </div>
+        <div class="flex justify-between" style="color:var(--tinta-2)" data-fila-envio>
+          <dt>Envío</dt><dd class="tabular-nums" data-envio>Elegí tu zona</dd>
+        </div>
+        <div class="flex justify-between text-[17px] font-semibold">
+          <dt>Total</dt><dd class="tabular-nums" data-total>$ 0</dd>
+        </div>
+      </dl>
+      <button type="submit" class="d-boton tocable w-full" data-enviar>
+        <Icono nombre="whatsapp-logo" tamano={20} />
+        Enviar pedido por WhatsApp
+      </button>
+    </div>
+  </form>
+
+  <!-- Éxito -->
+  <div class="d-hoja-cuerpo exito" data-exito hidden>
+    <div class="sello">
+      <svg class="d-check-grande" viewBox="0 0 56 56" width="96" height="96" aria-hidden="true">
+        <circle cx="28" cy="28" r="26" fill="none" stroke="var(--acento)" stroke-width="2" stroke-linecap="round"
+        ></circle>
+      </svg>
+      <Emoji nombre="exito" tamano={56} />
+    </div>
+    <h3 class="mt-4 text-[24px]" tabindex="-1" data-exito-titulo>Pedido listo</h3>
+    <p class="mt-2 text-[15px]" style="color:var(--tinta-2)">
+      Se abrió WhatsApp con tu pedido armado. Solo tocá enviar y el local te confirma.
+    </p>
+    <div class="d-card resumen mt-6" data-exito-resumen></div>
+    <div class="mt-6 flex w-full flex-col gap-3">
+      <a class="d-boton tocable" href="#" target="_blank" rel="noopener" data-exito-whatsapp>
+        <Icono nombre="whatsapp-logo" tamano={20} />
+        Abrir WhatsApp
+      </a>
+      <button type="button" class="d-boton-neutro tocable" data-cerrar>Volver al menú</button>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .aviso {
+    margin-bottom: 8px;
+    padding: 12px 16px;
+    border-radius: 16px;
+    background: var(--acento-tinte);
+    font-size: 14px;
+  }
+  .vacio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 0 8px;
+    text-align: center;
+  }
+  .retiro {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 20px;
+    background: var(--lienzo);
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .retiro[hidden] {
+    display: none;
+  }
+  .exito {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 16px;
+    text-align: center;
+  }
+  .exito[hidden] {
+    display: none;
+  }
+  .sello {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 96px;
+    height: 96px;
+  }
+  .sello svg {
+    position: absolute;
+    inset: 0;
+    transform: rotate(-90deg);
+  }
+  .sello :global(.d-emoji) {
+    animation: sello-entra 450ms var(--resorte) 250ms both;
+  }
+  @keyframes sello-entra {
+    from {
+      transform: scale(0.4);
+      opacity: 0;
+    }
+  }
+  .exito h3:focus {
+    outline: none;
+  }
+  .resumen {
+    width: 100%;
+    padding: 16px 20px;
+    text-align: left;
+    box-shadow: inset 0 0 0 1.5px var(--hairline);
+  }
+</style>

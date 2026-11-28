@@ -1,0 +1,210 @@
+{
+  "demo": {
+    "slug": "barberia",
+    "mensajeInteres": "Hola! Vi la demo de la barbería de why y quiero una web de turnos así para mi negocio"
+  },
+  "mensaje": {
+    "emoji": "💈",
+    "emojiServicio": "✂️",
+    "emojiProfesional": "🧔"
+  },
+  "marca": {
+    "acento": "#B5D77B",
+    "textoSobreAcento": "#111111",
+    "heroImg": "demos/barberia/local.jpg",
+    "logoEmoji": "barberia"
+  },
+  "negocio": {
+    "nombre": "Barbería Norte (DEMO)",
+    "nombreCorto": "Barbería Norte",
+    "eslogan": "Cortes clásicos y modernos",
+    "logoTexto": "BN",
+    "whatsapp": "",
+    "direccion": "Calle Falsa 123",
+    "instagram": "https://instagram.com/barberianorte.demo",
+    "rating": 4.9,
+    "resenas": 128
+  },
+  "opiniones": [
+    {
+      "nombre": "Nico R.",
+      "texto": "Saqué turno en un minuto y me atendieron puntual.",
+      "estrellas": 5
+    },
+    {
+      "nombre": "Fede M.",
+      "texto": "Lucas es un crack con la barba. Vuelvo seguro.",
+      "estrellas": 5
+    },
+    {
+      "nombre": "Tomi G.",
+      "texto": "Me encantó poder elegir horario sin mandar mensajes.",
+      "estrellas": 5
+    }
+  ],
+  "servicios": [
+    {
+      "id": "corte",
+      "nombre": "Corte",
+      "precio": 9000,
+      "duracion": 30,
+      "emoji": "tijera"
+    },
+    {
+      "id": "corte-barba",
+      "nombre": "Corte + barba",
+      "precio": 13000,
+      "duracion": 45,
+      "emoji": "barberia"
+    },
+    {
+      "id": "barba",
+      "nombre": "Barba",
+      "precio": 6000,
+      "duracion": 30,
+      "emoji": "barba"
+    },
+    {
+      "id": "color",
+      "nombre": "Color",
+      "precio": 18000,
+      "duracion": 60,
+      "emoji": "color"
+    }
+  ],
+  "profesionales": [
+    {
+      "id": "martin",
+      "nombre": "Martín",
+      "foto": "demos/barberia/martin.jpg",
+      "servicios": [
+        "corte",
+        "corte-barba",
+        "barba",
+        "color"
+      ],
+      "especialidad": "Fades y clásicos"
+    },
+    {
+      "id": "lucas",
+      "nombre": "Lucas",
+      "foto": "demos/barberia/lucas.jpg",
+      "servicios": [
+        "corte",
+        "corte-barba",
+        "barba"
+      ],
+      "especialidad": "Barba y navaja"
+    },
+    {
+      "id": "sofia",
+      "nombre": "Sofía",
+      "foto": "demos/barberia/sofia.jpg",
+      "servicios": [
+        "corte",
+        "color"
+      ],
+      "especialidad": "Color y diseño"
+    }
+  ],
+  "cualquieraDisponible": {
+    "habilitado": true,
+    "nombre": "Cualquiera disponible"
+  },
+  "horarios": {
+    "lunes": null,
+    "martes": {
+      "abre": "10:00",
+      "cierra": "20:00"
+    },
+    "miercoles": {
+      "abre": "10:00",
+      "cierra": "20:00"
+    },
+    "jueves": {
+      "abre": "10:00",
+      "cierra": "20:00"
+    },
+    "viernes": {
+      "abre": "10:00",
+      "cierra": "20:00"
+    },
+    "sabado": {
+      "abre": "10:00",
+      "cierra": "20:00"
+    },
+    "domingo": null
+  },
+  "intervaloMinutos": 30,
+  "diasCerrados": [
+    "2026-12-25",
+    "2027-01-01"
+  ],
+  "turnosOcupados": [
+    {
+      "dia": "martes",
+      "hora": "10:00",
+      "profesional": "martin"
+    },
+    {
+      "dia": "martes",
+      "hora": "17:30",
+      "profesional": "lucas"
+    },
+    {
+      "dia": "miercoles",
+      "hora": "11:00",
+      "profesional": "martin"
+    },
+    {
+      "dia": "miercoles",
+      "hora": "18:00",
+      "profesional": "sofia"
+    },
+    {
+      "dia": "jueves",
+      "hora": "12:30",
+      "profesional": "lucas"
+    },
+    {
+      "dia": "viernes",
+      "hora": "10:30",
+      "profesional": "martin"
+    },
+    {
+      "dia": "viernes",
+      "hora": "18:30",
+      "profesional": "martin"
+    },
+    {
+      "dia": "viernes",
+      "hora": "19:00",
+      "profesional": "lucas"
+    },
+    {
+      "dia": "sabado",
+      "hora": "10:00",
+      "profesional": "martin"
+    },
+    {
+      "dia": "sabado",
+      "hora": "11:00",
+      "profesional": "lucas"
+    },
+    {
+      "dia": "sabado",
+      "hora": "11:30",
+      "profesional": "martin"
+    },
+    {
+      "dia": "sabado",
+      "hora": "16:00",
+      "profesional": "sofia"
+    }
+  ],
+  "sena": {
+    "activa": true,
+    "porcentaje": 30,
+    "texto": "Para confirmar te enviamos un link de Mercado Pago por la seña"
+  }
+}

@@ -1,0 +1,50 @@
+---
+/**
+ * Botón primario verde (la única señal de acción). Texto siempre vino-950.
+ * Para WhatsApp: `whatsapp` (mensaje) + `ubicacion`. El link se arma en el build
+ * (funciona sin JS) y con JS pasa por abrirWhatsapp() para medir.
+ */
+import type { HTMLAttributes } from 'astro/types';
+import { linkWhatsapp } from '../../scripts/whatsapp';
+import Icono from './Icono.astro';
+
+interface Props extends HTMLAttributes<'a'> {
+  href?: string;
+  tamano?: 'sm' | 'md' | 'lg';
+  /** Flecha a la derecha que se desplaza 2px en hover */
+  flecha?: boolean | 'diagonal';
+  whatsapp?: string;
+  ubicacion?: string;
+  plan?: string;
+  class?: string;
+}
+
+const { href, tamano = 'md', flecha = false, whatsapp, ubicacion, plan, class: clase, ...resto } = Astro.props;
+
+const esWhatsapp = typeof whatsapp === 'string';
+const destino = esWhatsapp ? linkWhatsapp(whatsapp) : href;
+const clases = ['btn btn-primario', `btn-${tamano}`, clase];
+const atributosWa = esWhatsapp
+  ? {
+      target: '_blank',
+      rel: 'noopener',
+      'data-wa-mensaje': whatsapp,
+      'data-wa-ubicacion': ubicacion,
+      'data-wa-plan': plan,
+    }
+  : {};
+---
+
+{
+  destino ? (
+    <a href={destino} class:list={clases} {...atributosWa} {...resto}>
+      <slot />
+      {flecha && <Icono nombre={flecha === 'diagonal' ? 'arrow-up-right' : 'arrow-right'} tamano={16} class="flecha" />}
+    </a>
+  ) : (
+    <button type="button" class:list={clases} {...(resto as HTMLAttributes<'button'>)}>
+      <slot />
+      {flecha && <Icono nombre="arrow-right" tamano={16} class="flecha" />}
+    </button>
+  )
+}

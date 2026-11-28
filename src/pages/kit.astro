@@ -1,0 +1,337 @@
+---
+/**
+ * /kit — Kit de componentes del rediseño why (no se indexa).
+ * Sirve para revisar fundaciones antes de armar landing y demos.
+ */
+import '../styles/demo-base.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/ui/Nav.astro';
+import Logo from '../components/ui/Logo.astro';
+import BotonPrimario from '../components/ui/BotonPrimario.astro';
+import BotonSecundario from '../components/ui/BotonSecundario.astro';
+import TarjetaTecla from '../components/ui/TarjetaTecla.astro';
+import Badge from '../components/ui/Badge.astro';
+import Icono from '../components/ui/Icono.astro';
+import IconoCaja from '../components/ui/IconoCaja.astro';
+import Segmentado from '../components/ui/Segmentado.astro';
+import EncabezadoSeccion from '../components/ui/EncabezadoSeccion.astro';
+import PillEstado from '../components/ui/PillEstado.astro';
+import Footer from '../components/landing/Footer.astro';
+import site from '../data/site.json';
+import { estiloAcento } from '../scripts/formato';
+
+const mensaje = `Hola ${site.nombrePersona}! Vi tu web y quiero consultar por una página para mi negocio.`;
+
+// --- Contraste WCAG calculado en el build ---
+const lum = (hex: string) => {
+  const c = [1, 3, 5]
+    .map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
+    .map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+};
+const ratio = (a: string, b: string) => {
+  const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m);
+  return (x + 0.05) / (y + 0.05);
+};
+const pares: [string, string, string, number][] = [
+  ['Títulos · texto-1 / vino-950', '#F4F6F3', '#0B0D0C', 4.5],
+  ['Párrafos · texto-2 / vino-950', '#C1C9C1', '#0B0D0C', 4.5],
+  ['Párrafos en tarjeta · texto-2 / vino-900', '#C1C9C1', '#141715', 4.5],
+  ['Meta · texto-3 / vino-950', '#A7B2A7', '#0B0D0C', 4.5],
+  ['Meta en tarjeta · texto-3 / vino-900', '#A7B2A7', '#141715', 4.5],
+  ['Botón · tinta / verde', '#10150E', '#B5D77B', 4.5],
+  ['Botón hover · tinta / verde-hover', '#10150E', '#C8E696', 4.5],
+  ['Badge destacado · verde / vino-900', '#B5D77B', '#141715', 4.5],
+  ['Demo · tinta-2 / superficie', '#C1C9C1', '#171B18', 4.5],
+  ['Demo · tinta-2 / lienzo', '#C1C9C1', '#0B0D0C', 4.5],
+  ['Demos · tinta / acento', '#111111', '#B5D77B', 4.5],
+];
+
+const colores = [
+  ['vino-950', '#0B0D0C'],
+  ['vino-900', '#141715'],
+  ['vino-850', '#1C201D'],
+  ['vino-800', '#252A26'],
+  ['linea', '#343C36'],
+  ['vino-700', '#501F31'],
+  ['vino-600', '#743047'],
+  ['vino-500', '#B16A80'],
+  ['texto-1', '#F4F6F3'],
+  ['texto-2', '#C1C9C1'],
+  ['texto-3', '#A7B2A7'],
+  ['verde', '#B5D77B'],
+  ['niebla', '#E9EEE7'],
+];
+
+const iconos = ['browser', 'calendar-check', 'bag', 'chat-circle', 'file-text', 'hammer', 'globe'];
+---
+
+<BaseLayout title={`Kit de componentes · ${site.marca}`} description="Kit de componentes del rediseño." noindex>
+  <Nav mensaje={mensaje} />
+
+  <main class="contenedor pt-32 pb-24">
+    <p class="eyebrow">KIT · ETAPA 2</p>
+    <h1 class="display mt-4">Fundaciones</h1>
+    <p class="cuerpo-g parrafo mt-4">Tokens, tipografía y componentes base de la landing y de las demos.</p>
+
+    <!-- Logo -->
+    <section class="bloque" aria-labelledby="k-logo">
+      <h2 id="k-logo" class="eyebrow">Logo</h2>
+      <div class="mt-6 flex flex-wrap items-center gap-8">
+        <Logo />
+        <Logo soloMonograma tamano={48} />
+        <img src="/brand/why-mark.png" width="88" height="49" alt="Símbolo de why" />
+        <img src="/brand/why-logo.png" width="88" height="83" alt="Logotipo de why" />
+      </div>
+      <p class="meta mt-4">LOGOTIPO Y SÍMBOLO DE WHY</p>
+    </section>
+
+    <!-- Colores -->
+    <section class="bloque" aria-labelledby="k-color">
+      <h2 id="k-color" class="eyebrow">Paleta</h2>
+      <ul class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-7">
+        {
+          colores.map(([n, hex]) => (
+            <li>
+              <span class="muestra" style={`background:${hex}`} />
+              <p class="mt-2 text-sm text-texto-1">{n}</p>
+              <p class="meta">{hex}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <!-- Contraste -->
+    <section class="bloque" aria-labelledby="k-contraste">
+      <h2 id="k-contraste" class="eyebrow">Contraste WCAG AA</h2>
+      <table class="tabla mt-6">
+        <thead>
+          <tr><th scope="col">Par</th><th scope="col">Muestra</th><th scope="col">Ratio</th><th scope="col">AA</th></tr>
+        </thead>
+        <tbody>
+          {
+            pares.map(([n, fg, bg, min]) => {
+              const r = ratio(fg, bg);
+              return (
+                <tr>
+                  <td>{n}</td>
+                  <td>
+                    <span class="chip-contraste" style={`color:${fg};background:${bg}`}>
+                      Aa 16px
+                    </span>
+                  </td>
+                  <td class="font-mono text-texto-1">{r.toFixed(2)}:1</td>
+                  <td>{r >= min ? <Badge variante="destacado">Pasa</Badge> : <Badge>No pasa</Badge>}</td>
+                </tr>
+              );
+            })
+          }
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Tipografía -->
+    <section class="bloque" aria-labelledby="k-tipo">
+      <h2 id="k-tipo" class="eyebrow">Tipografía · Inter + Geist Mono</h2>
+      <div class="mt-6 space-y-6">
+        <div><p class="meta">DISPLAY · 64/40 · 500</p><p class="display text-texto-1">Pedidos y turnos.</p></div>
+        <div><p class="meta">H2 · 40/30 · 500</p><p class="h2 text-texto-1">Tres formas de vender más.</p></div>
+        <div><p class="meta">H3 · 20/18 · 500</p><p class="h3 text-texto-1">Web de Turnos</p></div>
+        <div><p class="meta">CUERPO GRANDE · 18/17</p><p class="cuerpo-g parrafo">Webs con tu marca para negocios locales. Sin comisiones por venta.</p></div>
+        <div><p class="meta">CUERPO · 16</p><p class="parrafo">Vos mandás fotos y precios; yo cargo todo.</p></div>
+        <div><p class="meta">EYEBROW · GEIST MONO 12/11</p><p class="eyebrow">Demos en vivo</p></div>
+      </div>
+    </section>
+
+    <!-- Botones -->
+    <section class="bloque" aria-labelledby="k-botones">
+      <h2 id="k-botones" class="eyebrow">Botones</h2>
+      <div class="mt-6 flex flex-wrap items-center gap-4">
+        <BotonPrimario tamano="sm" href="#">Escribime</BotonPrimario>
+        <BotonPrimario href="#" flecha>Escribime</BotonPrimario>
+        <BotonPrimario tamano="lg" whatsapp={mensaje} ubicacion="kit" flecha>Escribime por WhatsApp</BotonPrimario>
+      </div>
+      <div class="mt-4 flex flex-wrap items-center gap-4">
+        <BotonSecundario tamano="sm" href="#">Demos</BotonSecundario>
+        <BotonSecundario href="#">Probar una demo</BotonSecundario>
+        <BotonSecundario href="#" flecha="diagonal">Abrir en pantalla completa</BotonSecundario>
+      </div>
+    </section>
+
+    <!-- Badges, íconos, estado -->
+    <section class="bloque" aria-labelledby="k-varios">
+      <h2 id="k-varios" class="eyebrow">Badges · íconos · estado</h2>
+      <div class="mt-6 flex flex-wrap items-center gap-3">
+        <Badge>Base</Badge>
+        <Badge variante="destacado">Más elegido</Badge>
+        <PillEstado>Disponible para nuevos proyectos</PillEstado>
+      </div>
+      <ul class="mt-6 flex flex-wrap gap-4">
+        {
+          iconos.map((n) => (
+            <li class="flex flex-col items-center gap-2">
+              <IconoCaja nombre={n} />
+              <span class="meta">{n}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <!-- Segmentado -->
+    <section class="bloque" aria-labelledby="k-seg">
+      <h2 id="k-seg" class="eyebrow">Selector segmentado</h2>
+      <div class="mt-6">
+        <Segmentado
+          etiqueta="Tipo de demo"
+          idBase="kit-seg"
+          opciones={[
+            { id: 'pedidos', etiqueta: 'Pedidos' },
+            { id: 'turnos', etiqueta: 'Turnos' },
+          ]}
+        />
+      </div>
+    </section>
+
+    <!-- Tarjetas -->
+    <section class="bloque" aria-labelledby="k-tarjetas">
+      <h2 id="k-tarjetas" class="eyebrow">Tarjeta tecla</h2>
+      <EncabezadoSeccion eyebrow="Servicios" titulo="Tres formas de vender más." bajada="Precios claros. Elegís, me escribís, arrancamos." />
+      <ul class="grid gap-4 md:grid-cols-3 md:gap-6">
+        {
+          [
+            { icono: 'browser', nombre: 'Landing Page', destacado: false },
+            { icono: 'bag', nombre: 'Pedidos Take Away', destacado: true },
+            { icono: 'calendar-check', nombre: 'Web de Turnos', destacado: false },
+          ].map((p, i) => (
+            <TarjetaTecla as="li" destacada={p.destacado} class="flex flex-col" data-reveal style={`--i:${i}`}>
+              <IconoCaja nombre={p.icono} />
+              <div class="mt-6 flex items-center gap-2">
+                <h3 class="h3">{p.nombre}</h3>
+                {p.destacado && <Badge variante="destacado">Más elegido</Badge>}
+              </div>
+              <p class="mt-2 text-sm text-texto-3">Para: ejemplo de público</p>
+              <p class="meta mt-6">DESDE</p>
+              <p class="mt-1 text-4xl font-medium text-texto-1 tabular-nums">$ 250.000</p>
+              <p class="mt-1 text-sm">+ $ 25.000/mes con hosting y soporte</p>
+              <hr class="my-6 border-linea" />
+              <ul class="space-y-3 text-[15px]">
+                {['Ítem uno', 'Ítem dos', 'Ítem tres'].map((t) => (
+                  <li class="flex items-center gap-3">
+                    <Icono nombre="check" tamano={16} class="text-verde" />
+                    {t}
+                  </li>
+                ))}
+              </ul>
+              <div class="mt-auto pt-8">
+                {p.destacado ? (
+                  <BotonPrimario href="#" class="w-full">Quiero este</BotonPrimario>
+                ) : (
+                  <BotonSecundario href="#" class="w-full">Quiero este</BotonSecundario>
+                )}
+              </div>
+            </TarjetaTecla>
+          ))
+        }
+      </ul>
+    </section>
+
+    <!-- Demos -->
+    <section class="bloque" aria-labelledby="k-demos">
+      <h2 id="k-demos" class="eyebrow">Demos · superficies oscuras</h2>
+      <div class="mt-6 grid gap-6 md:grid-cols-2">
+        {
+          [
+            { nombre: 'Pizzería', acento: '#B5D77B', texto: '#111111' },
+            { nombre: 'Barbería', acento: '#B5D77B', texto: '#111111' },
+          ].map((d) => (
+            <div class="demo rounded-[28px] p-6" style={estiloAcento(d.acento, d.texto)}>
+              <p class="text-[13px] font-medium" style="color:var(--tinta-2)">
+                ACENTO {d.nombre.toUpperCase()} · {d.acento}
+              </p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <button class="d-chip tocable activo" type="button">Pizzas</button>
+                <button class="d-chip tocable" type="button">Empanadas</button>
+                <span class="d-pill-gris">45 min</span>
+              </div>
+              <div class="d-card mt-4 flex items-center gap-4 p-4">
+                <div class="size-[72px] shrink-0 rounded-[20px]" style="background:var(--acento-tinte)" />
+                <div class="min-w-0 flex-1">
+                  <p class="font-medium">Muzzarella</p>
+                  <p class="text-sm" style="color:var(--tinta-2)">Salsa, muzzarella y aceitunas.</p>
+                </div>
+                <button class="d-mas tocable" type="button" aria-label="Agregar">
+                  <Icono nombre="plus" peso="bold" tamano={18} />
+                </button>
+              </div>
+              <div class="mt-4">
+                <Segmentado
+                  tema="claro"
+                  anchoCompleto
+                  etiqueta="Entrega"
+                  idBase={`kit-${d.nombre}`}
+                  opciones={[
+                    { id: 'envio', etiqueta: 'Envío' },
+                    { id: 'retiro', etiqueta: 'Retiro' },
+                  ]}
+                />
+              </div>
+              <div class="mt-4 flex flex-wrap gap-3">
+                <button class="d-boton tocable flex-1" type="button">Agregar · $ 12.500</button>
+                <button class="d-boton-neutro tocable" type="button">Volver</button>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .bloque {
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid var(--linea);
+  }
+  .muestra {
+    display: block;
+    height: 56px;
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  .tabla {
+    width: 100%;
+    font-size: 14px;
+    border-collapse: collapse;
+  }
+  .tabla th {
+    text-align: left;
+    font-family: var(--fuente-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--texto-3);
+    padding: 8px 12px 8px 0;
+  }
+  .tabla td {
+    padding: 12px 12px 12px 0;
+    border-top: 1px solid var(--linea);
+  }
+  .chip-contraste {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 16px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  }
+  @media (max-width: 640px) {
+    .tabla th:nth-child(2),
+    .tabla td:nth-child(2) {
+      display: none;
+    }
+  }
+</style>

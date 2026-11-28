@@ -1,0 +1,76 @@
+/* why — negro, verde y borgoña. */
+
+:root {
+  /* Superficies */
+  --vino-950: #0b0d0c;
+  --vino-900: #141715;
+  --vino-850: #1c201d;
+  --vino-800: #252a26;
+  --linea: #343c36;
+
+  /* Borgoña */
+  --vino-700: #501f31;
+  --vino-600: #743047;
+  --vino-500: #b16a80;
+
+  /* Texto */
+  --texto-1: #f4f6f3;
+  --texto-2: #c1c9c1;
+  --texto-3: #a7b2a7;
+
+  /* Acción y detalle */
+  --accion: #b5d77b;
+  --accion-hover: #c8e696;
+  --verde: #b5d77b;
+  --verde-hover: #c8e696;
+  --verde-tinte: rgba(181, 215, 123, 0.12);
+  --niebla: #e9eee7;
+
+  --sombra-tecla: 0 1px 2px rgba(0, 0, 0, 0.2), 0 0 0 1px var(--linea);
+  --sombra-tecla-hover: 0 12px 30px rgba(0, 0, 0, 0.25), 0 0 0 1px #596658;
+  --halo-verde: 0 0 0 1px rgba(181, 215, 123, 0.2), 0 8px 24px rgba(0, 0, 0, 0.2);
+
+  /* Radios */
+  --r-boton: 10px;
+  --r-input: 10px;
+  --r-badge: 6px;
+  --r-card: 16px;
+  --r-card-lg: 20px;
+  --r-pill: 9999px;
+
+  /* Movimiento */
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Tipografía */
+  --fuente: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fuente-display: 'DM Serif Display', Georgia, serif;
+  --fuente-mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+}
+
+@theme inline {
+  --color-vino-950: var(--vino-950);
+  --color-vino-900: var(--vino-900);
+  --color-vino-850: var(--vino-850);
+  --color-vino-800: var(--vino-800);
+  --color-vino-700: var(--vino-700);
+  --color-vino-600: var(--vino-600);
+  --color-vino-500: var(--vino-500);
+  --color-accion: var(--accion);
+  --color-accion-hover: var(--accion-hover);
+  --color-linea: var(--linea);
+  --color-texto-1: var(--texto-1);
+  --color-texto-2: var(--texto-2);
+  --color-texto-3: var(--texto-3);
+  --color-verde: var(--verde);
+  --color-verde-hover: var(--verde-hover);
+  --color-niebla: var(--niebla);
+
+  --font-sans: var(--fuente);
+  --font-display: var(--fuente-display);
+  --font-mono: var(--fuente-mono);
+
+  --radius-boton: var(--r-boton);
+  --radius-badge: var(--r-badge);
+  --radius-card: var(--r-card);
+  --radius-card-lg: var(--r-card-lg);
+}

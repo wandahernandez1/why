@@ -1,0 +1,44 @@
+---
+/** Logotipo de why y su símbolo para espacios compactos. */
+interface Props {
+  /** Muestra solo el símbolo */
+  soloMonograma?: boolean;
+  /** Alto de la imagen en px */
+  tamano?: number;
+  href?: string;
+  class?: string;
+}
+
+const { soloMonograma = false, tamano = 56, href, class: clase } = Astro.props;
+const Tag = href ? 'a' : 'span';
+---
+
+<Tag href={href} class:list={['logo', clase]}>
+  <img
+    class="logo-imagen"
+    src={soloMonograma ? '/brand/why-mark.png' : '/brand/why-logo.png'}
+    alt={href ? 'why, inicio' : 'why'}
+    style={`--logo-height:${tamano}px`}
+    decoding="async"
+  />
+</Tag>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    line-height: 0;
+  }
+  .logo-imagen {
+    display: block;
+    width: auto;
+    height: var(--logo-height);
+    object-fit: contain;
+  }
+  .digital {
+    font-weight: 400;
+    color: var(--texto-2);
+  }
+</style>

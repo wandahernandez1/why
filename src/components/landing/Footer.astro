@@ -1,0 +1,114 @@
+---
+/** Footer de una sola fila: logo · meta en Geist Mono · Instagram y email. */
+import site from '../../data/site.json';
+import Logo from '../ui/Logo.astro';
+import Icono from '../ui/Icono.astro';
+import { sinCorchetes } from '../../scripts/formato';
+
+interface Props {
+  /** Deja lugar abajo para la barra flotante de mobile (solo en la landing) */
+  conBarraMovil?: boolean;
+}
+const { conBarraMovil = false } = Astro.props;
+
+const email = sinCorchetes(site.email);
+const instagram = sinCorchetes(site.instagram);
+const anio = new Date().getFullYear();
+---
+
+<footer class:list={['pie', { 'con-barra': conBarraMovil }]}>
+  <div class="contenedor fila">
+    <Logo href="/" />
+    <p class="meta centro">
+      © {anio} {site.marca.toUpperCase()}<span class="sep" aria-hidden="true">|</span>{
+        site.ciudadZona.toUpperCase()
+      }<span class="sep" aria-hidden="true">|</span>HECHO A MANO<span class="sep" aria-hidden="true">|</span><a
+        href="/privacidad">PRIVACIDAD</a
+      >
+    </p>
+    <ul class="redes">
+      <li>
+        <a href={instagram} target="_blank" rel="noopener" aria-label="Instagram">
+          <Icono nombre="instagram-logo" />
+        </a>
+      </li>
+      <li>
+        <a href={`mailto:${email}`} aria-label={`Email: ${email}`}>
+          <Icono nombre="envelope-simple" />
+        </a>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .pie {
+    border-top: 1px solid var(--linea);
+    padding-block: 32px;
+    background: #090b0a;
+    color: var(--texto-2);
+  }
+  .con-barra {
+    padding-bottom: 112px;
+  }
+  .meta,
+  .centro a {
+    color: var(--texto-3);
+  }
+  .centro a:hover {
+    color: #fffdfa;
+  }
+  .sep {
+    color: rgba(255, 253, 250, 0.18);
+  }
+  @media (min-width: 768px) {
+    .con-barra {
+      padding-bottom: 32px;
+    }
+  }
+  .fila {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+  }
+  @media (min-width: 900px) {
+    .fila {
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: left;
+    }
+  }
+  .centro a {
+    color: var(--texto-3);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .centro a:hover {
+    color: var(--texto-1);
+  }
+  .sep {
+    margin-inline: 8px;
+    color: var(--linea);
+  }
+  .redes {
+    display: flex;
+    gap: 8px;
+  }
+  .redes a {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--r-boton);
+    color: var(--texto-2);
+    transition:
+      color 180ms var(--ease),
+      background-color 180ms var(--ease);
+  }
+  .redes a:hover {
+    color: var(--texto-1);
+    background: rgba(255, 255, 255, 0.04);
+  }
+</style>

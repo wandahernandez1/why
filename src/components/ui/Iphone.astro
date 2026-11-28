@@ -1,0 +1,205 @@
+---
+/**
+ * iPhone dibujado con CSS con una demo VIVA adentro (<iframe>).
+ * El iframe NO carga con la página: queda en data-src y lo carga iphone.ts
+ *   carga="idle"     → cuando la página terminó de cargar (hero)
+ *   carga="visible"  → cuando el teléfono entra en pantalla (sección Demos)
+ * Mientras tanto se ve un esqueleto claro (sin imágenes que queden viejas).
+ */
+interface Props {
+  src: string;
+  titulo: string;
+  carga?: 'idle' | 'visible';
+  /** Ancho del teléfono: hero 300/240, demos 300/260 */
+  variante?: 'hero' | 'demos';
+  /** En mobile el iframe no captura el scroll; un toque abre la demo */
+  tocarParaAbrirEnMobile?: boolean;
+  /** Si se puede navegar con Tab dentro de la demo (sí en la sección Demos, no en el hero) */
+  enfocable?: boolean;
+  class?: string;
+}
+
+const {
+  src,
+  titulo,
+  carga = 'visible',
+  variante = 'hero',
+  tocarParaAbrirEnMobile = false,
+  enfocable = false,
+  class: clase,
+} = Astro.props;
+---
+
+<div class:list={['iphone', `iphone-${variante}`, clase]} data-iphone data-carga={carga}>
+  <span class="boton-lado izq-1" aria-hidden="true"></span>
+  <span class="boton-lado izq-2" aria-hidden="true"></span>
+  <span class="boton-lado izq-3" aria-hidden="true"></span>
+  <span class="boton-lado der" aria-hidden="true"></span>
+  <div class="pantalla">
+    <div class="esqueleto" aria-hidden="true">
+      <span class="sk sk-hero"></span>
+      <span class="sk sk-buscador"></span>
+      <span class="sk-fila"><span class="sk sk-chip"></span><span class="sk sk-chip"></span><span class="sk sk-chip"></span></span>
+      <span class="sk sk-card"></span>
+      <span class="sk sk-card"></span>
+      <span class="sk sk-card"></span>
+    </div>
+    <iframe title={titulo} data-src={src} loading="lazy" tabindex={enfocable ? undefined : -1}></iframe>
+    {
+      tocarParaAbrirEnMobile && (
+        <a href={src} class="tocar" data-evento="demo_open" data-evento-params='{"demo":"pizzeria","origen":"hero"}'>
+          <span class="sr-only">Abrir la demo de pedidos</span>
+        </a>
+      )
+    }
+  </div>
+</div>
+
+<style>
+  /* La demo se dibuja a 393 × 852 px (iPhone 15). iphone.ts ajusta --escala según el ancho real. */
+  .iphone {
+    --ancho: 240px;
+    --escala: 0.55;
+    position: relative;
+    width: var(--ancho);
+    padding: 12px;
+    border-radius: 62px;
+    background: linear-gradient(145deg, #a9a9ae 0%, #4a4a4f 18%, #1c1c1e 50%, #6a6a70 82%, #2c2c2e 100%);
+    box-shadow:
+      inset 0 0 0 1.5px #7a7a80,
+      inset 0 0 0 4px #0b0b0c,
+      0 40px 80px rgba(0, 0, 0, 0.45);
+    flex-shrink: 0;
+  }
+  .iphone-demos {
+    --ancho: 260px;
+    --escala: 0.6;
+  }
+  @media (min-width: 768px) {
+    .iphone,
+    .iphone-demos {
+      --ancho: 300px;
+      --escala: 0.7;
+    }
+  }
+  .boton-lado {
+    position: absolute;
+    width: 4px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #8e8e93, #3a3a40);
+  }
+  .izq-1 {
+    left: -3px;
+    top: 15%;
+    height: 4%;
+  }
+  .izq-2 {
+    left: -3px;
+    top: 21%;
+    height: 7%;
+  }
+  .izq-3 {
+    left: -3px;
+    top: 30%;
+    height: 7%;
+  }
+  .der {
+    right: -3px;
+    top: 26%;
+    height: 11%;
+  }
+  /* Reflejo borgoña tenue debajo */
+  .iphone::after {
+    content: '';
+    position: absolute;
+    left: 15%;
+    right: 15%;
+    bottom: -48px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--vino-600);
+    opacity: 0.16;
+    filter: blur(32px);
+    pointer-events: none;
+    z-index: -1;
+  }
+  .pantalla {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 393 / 852;
+    overflow: hidden;
+    border-radius: 50px;
+    background: #f2f2f7;
+    isolation: isolate;
+  }
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 393px;
+    height: 852px;
+    border: 0;
+    transform: scale(var(--escala));
+    transform-origin: 0 0;
+    background: transparent;
+    opacity: 0;
+    transition: opacity 200ms var(--ease);
+  }
+  iframe.cargado {
+    opacity: 1;
+  }
+  .tocar {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  @media (min-width: 768px) {
+    .tocar {
+      display: none;
+    }
+  }
+
+  /* Esqueleto claro */
+  .esqueleto {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 12px;
+  }
+  .sk {
+    display: block;
+    border-radius: 14px;
+    background: linear-gradient(90deg, #e9e5e6 0%, #f3f0f1 50%, #e9e5e6 100%);
+    background-size: 200% 100%;
+    animation: brillo 1.4s ease-in-out infinite;
+  }
+  .sk-hero {
+    height: 30%;
+    margin: 0 -12px;
+    border-radius: 0 0 22px 22px;
+  }
+  .sk-buscador {
+    height: 34px;
+    border-radius: 999px;
+  }
+  .sk-fila {
+    display: flex;
+    gap: 8px;
+  }
+  .sk-chip {
+    width: 30%;
+    height: 26px;
+    border-radius: 999px;
+  }
+  .sk-card {
+    height: 64px;
+    border-radius: 18px;
+  }
+  @keyframes brillo {
+    to {
+      background-position: -200% 0;
+    }
+  }
+</style>

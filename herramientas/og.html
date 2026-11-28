@@ -1,0 +1,52 @@
+<!doctype html>
+<!--
+  Fuente de public/img/og.png (imagen para redes, 1200×630).
+  Para regenerarla (Chrome instalado):
+    chrome --headless=new --hide-scrollbars --window-size=1200,630 --virtual-time-budget=3000 --screenshot=public/img/og.png herramientas/og.html
+-->
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600&family=Sora:wght@700&display=block"
+    />
+    <style>
+      * { margin: 0; box-sizing: border-box; }
+      body {
+        width: 1200px; height: 630px; overflow: hidden; position: relative;
+        background: #0b0d0c; color: #f4f6f3; font-family: Inter, sans-serif;
+      }
+      .luz { position: absolute; border-radius: 50%; filter: blur(130px); }
+      .l1 { width: 560px; height: 560px; background: #b5d77b; opacity: .12; top: -220px; right: -120px; }
+      .l2 { width: 520px; height: 520px; background: #743047; opacity: .18; bottom: -260px; left: -160px; }
+      .l3 { width: 380px; height: 380px; background: #b5d77b; opacity: .08; bottom: -200px; right: 260px; }
+      .contenido { position: absolute; inset: 0; padding: 84px 88px; display: flex; flex-direction: column; justify-content: center; }
+      .badge {
+        align-self: flex-start; display: flex; align-items: center; gap: 10px;
+        padding: 10px 18px; border-radius: 999px; font-size: 22px; font-weight: 500;
+        background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12);
+      }
+      .badge i { width: 12px; height: 12px; border-radius: 50%; background: #b5d77b; box-shadow: 0 0 12px #b5d77b; }
+      h1 { margin-top: 30px; font-family: Sora, sans-serif; font-size: 84px; line-height: 1.05; letter-spacing: -.025em; max-width: 980px; }
+      h1 span { color: #b5d77b; }
+      ul { margin-top: 38px; display: flex; gap: 36px; list-style: none; padding: 0; font-size: 26px; font-weight: 600; }
+      li { display: flex; align-items: center; gap: 10px; }
+      li svg { width: 28px; height: 28px; color: #b5d77b; }
+    </style>
+  </head>
+  <body>
+    <div class="luz l1"></div>
+    <div class="luz l2"></div>
+    <div class="luz l3"></div>
+    <div class="contenido">
+      <p class="badge"><i></i>Webs para negocios locales</p>
+      <h1>Webs simples que te traen <span>pedidos y turnos</span>.</h1>
+      <ul>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>0% comisiones</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Tu marca</li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Online en 7 a 15 días</li>
+      </ul>
+    </div>
+  </body>
+</html>

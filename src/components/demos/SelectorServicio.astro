@@ -1,0 +1,67 @@
+---
+/** Paso 1: servicios como tarjetas grandes (emoji 3D, nombre, duración en píldora, precio). */
+import Emoji from './Emoji.astro';
+import { formatearARS } from '../../scripts/formato';
+
+interface Props {
+  servicios: { id: string; nombre: string; precio: number; duracion: number; emoji?: string }[];
+}
+const { servicios } = Astro.props;
+---
+
+<ul class="lista">
+  {
+    servicios.map((s, i) => (
+      <li>
+        <button type="button" class="d-eleccion tocable" data-servicio={s.id} aria-pressed="false">
+          <span class="indice" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+          <span class="min-w-0 flex-1">
+            <span class="nombre">
+              {s.emoji && <Emoji nombre={s.emoji} tamano={22} />}
+              {s.nombre}
+            </span>
+            <span class="meta">{s.duracion} minutos</span>
+          </span>
+          <span class="precio">{formatearARS(s.precio)}</span>
+          <span class="d-eleccion-check" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+          </span>
+        </button>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .lista {
+    border-top: 1px solid var(--hairline);
+  }
+  .indice {
+    width: 28px;
+    flex-shrink: 0;
+    font-family: var(--fuente-titulo);
+    font-size: 15px;
+    color: var(--tinta-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .nombre {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .meta {
+    display: block;
+    margin-top: 2px;
+    font-size: 13px;
+    color: var(--tinta-3);
+  }
+  .precio {
+    font-size: 16px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+</style>

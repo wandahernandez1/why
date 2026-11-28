@@ -1,0 +1,123 @@
+---
+import '../styles/global.css';
+import site from '../data/site.json';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Las demos y páginas de prueba no se indexan */
+  noindex?: boolean;
+  ogImage?: string;
+  /** Color de la barra del navegador en mobile */
+  themeColor?: string;
+  /** Estilos inline del <body> (las demos usan su propia paleta) */
+  estiloBody?: string;
+}
+
+const {
+  title,
+  description,
+  noindex = false,
+  ogImage = '/img/og.png',
+  themeColor = '#0b0d0c',
+  estiloBody,
+} = Astro.props;
+
+// Canónica sin barra final (igual que los links internos y el sitemap)
+const ruta = Astro.url.pathname.replace(/\/(index\.html)?$/, '') || '/';
+const canonical = new URL(ruta, Astro.site);
+const ogUrl = new URL(ogImage, Astro.site);
+
+// GA4 solo si hay un ID real (no el placeholder "[G-XXXX]")
+const ga4Id = /^G-[A-Z0-9]{4,}$/.test(site.ga4Id) ? site.ga4Id : null;
+
+const fuentes =
+  'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Serif+Display&family=Geist+Mono:wght@400;500&display=swap';
+---
+
+<!doctype html>
+<html lang="es-AR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="theme-color" content={themeColor} />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+
+    <!-- Open Graph / redes -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_AR" />
+    <meta property="og:site_name" content={site.marca} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Fuentes: solo los pesos que se usan, con display=swap -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={fuentes} />
+
+    <!-- Marca que hay JS (para las animaciones de aparición) -->
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      // Dentro de un iframe (demos en la landing): modo embebido
+      if (window.self !== window.top) document.documentElement.classList.add('embebido');
+    </script>
+
+    <slot name="head" />
+
+    {
+      ga4Id && (
+        <>
+          <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`} />
+          <script is:inline define:vars={{ ga4Id }}>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+              dataLayer.push(arguments);
+            }
+            window.gtag = gtag;
+            gtag('js', new Date());
+            gtag('config', ga4Id);
+          </script>
+        </>
+      )
+    }
+  </head>
+  <body style={estiloBody}>
+    <slot />
+
+    <script>
+      import { iniciarBotonesWhatsapp } from '../scripts/whatsapp';
+      import { iniciarEventos } from '../scripts/analytics';
+
+      iniciarBotonesWhatsapp();
+      iniciarEventos();
+
+      // Aparición suave de secciones con [data-reveal]
+      const elementos = document.querySelectorAll('[data-reveal]');
+      if ('IntersectionObserver' in window) {
+        const obs = new IntersectionObserver(
+          (entradas) => {
+            for (const e of entradas) {
+              if (e.isIntersecting) {
+                e.target.classList.add('revelado');
+                obs.unobserve(e.target);
+              }
+            }
+          },
+          { threshold: 0.12, rootMargin: '0px 0px -40px 0px' },
+        );
+        elementos.forEach((el) => obs.observe(el));
+      } else {
+        elementos.forEach((el) => el.classList.add('revelado'));
+      }
+    </script>
+  </body>
+</html>

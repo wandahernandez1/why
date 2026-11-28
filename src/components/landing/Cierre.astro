@@ -1,0 +1,124 @@
+---
+/** CTA final + firma personal (reemplaza "Sobre mí"). */
+import fs from 'node:fs';
+import path from 'node:path';
+import site from '../../data/site.json';
+import BotonPrimario from '../ui/BotonPrimario.astro';
+import Imagen from '../ui/Imagen.astro';
+
+interface Props {
+  mensaje: string;
+}
+const { mensaje } = Astro.props;
+
+// Avatar: src/assets/yo.* (optimizada) → public/img/yo.jpg → inicial
+const enAssets = Object.keys(import.meta.glob('/src/assets/yo.{jpg,jpeg,png,webp}'))[0];
+const enPublic = fs.existsSync(path.join(process.cwd(), 'public', 'img', 'yo.jpg')) ? '/img/yo.jpg' : null;
+const foto = enAssets ?? enPublic;
+const inicial = site.nombrePersona.replace(/[\[\]]/g, '').trim().charAt(0).toUpperCase() || 'N';
+---
+
+<section class="seccion pt-0 md:pt-0" aria-labelledby="titulo-cierre">
+  <div class="contenedor">
+    <div class="tarjeta" data-reveal>
+      <span class="atm" aria-hidden="true"></span>
+      <span class="fuga" aria-hidden="true"></span>
+
+      <div class="relative">
+        <h2 id="titulo-cierre" class="h2 mx-auto">Cada pedido que entra por tu web es 100% tuyo.</h2>
+        <p class="cuerpo-g mx-auto mt-4">Contame qué negocio tenés y te digo qué te conviene.</p>
+        <BotonPrimario tamano="lg" whatsapp={mensaje} ubicacion="cierre" flecha class="mt-8 w-full sm:w-auto">
+          Escribime por WhatsApp
+        </BotonPrimario>
+
+        <div class="firma">
+          {
+            foto ? (
+              <Imagen src={foto} alt="" width={40} height={40} class="avatar object-cover" />
+            ) : (
+              <span class="avatar avatar-inicial" aria-hidden="true">
+                {inicial}
+              </span>
+            )
+          }
+          <div class="text-left">
+            <p class="text-sm text-texto-1">{site.nombrePersona} · {site.marca}</p>
+            <p class="meta">RESPONDO EN EL DÍA</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #titulo-cierre {
+    max-width: 18ch;
+  }
+  .tarjeta {
+    position: relative;
+    overflow: hidden;
+    padding: 48px 24px;
+    border-radius: var(--r-card-lg);
+    border: 1px solid rgba(255, 253, 250, 0.09);
+    background:
+      radial-gradient(circle at 82% 18%, rgba(174, 199, 111, 0.10), transparent 15rem),
+      linear-gradient(145deg, #1d2420 0%, #181214 100%);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    color: #fffdfa;
+  }
+  .tarjeta :global(h2),
+  .tarjeta :global(.cuerpo-g),
+  .tarjeta :global(.text-texto-1) {
+    color: #fffdfa;
+  }
+  .tarjeta :global(.meta) {
+    color: rgba(255, 253, 250, 0.72);
+  }
+  @media (min-width: 768px) {
+    .tarjeta {
+      padding: 80px;
+    }
+  }
+  .atm {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(70% 80% at 50% 100%, rgba(126, 24, 56, 0.12), transparent 70%);
+    pointer-events: none;
+  }
+  .fuga {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    right: 12%;
+    bottom: -80px;
+    border-radius: 50%;
+    background: var(--verde);
+    opacity: 0.12;
+    filter: blur(80px);
+    pointer-events: none;
+  }
+  .firma {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 32px;
+  }
+  .firma :global(.avatar) {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px var(--linea);
+  }
+  .avatar-inicial {
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, var(--vino-500), var(--vino-700));
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+  }
+</style>

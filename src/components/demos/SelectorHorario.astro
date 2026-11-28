@@ -1,0 +1,43 @@
+---
+/**
+ * Paso 3: tira de 14 días + horarios agrupados en Mañana / Tarde / Noche.
+ * Lo llena turnos.ts en el navegador (depende de la fecha y hora actual).
+ */
+import Emoji from './Emoji.astro';
+---
+
+<div>
+  <ul class="dias" aria-label="Elegí el día" data-dias></ul>
+  <div class="mt-6" data-horas aria-live="polite"></div>
+  <div class="vacio" data-sin-horas hidden>
+    <Emoji nombre="calendario" tamano={56} />
+    <p class="mt-3 text-[16px] font-semibold">No quedan horarios este día</p>
+    <button type="button" class="d-boton-neutro tocable mt-4" data-proximo-dia></button>
+  </div>
+</div>
+
+<style>
+  .dias {
+    display: flex;
+    gap: 8px;
+    margin-inline: -20px;
+    padding: 4px 20px 8px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 20px;
+    scrollbar-width: none;
+  }
+  .dias::-webkit-scrollbar {
+    display: none;
+  }
+  .vacio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 0 8px;
+    text-align: center;
+  }
+  .vacio[hidden] {
+    display: none;
+  }
+</style>

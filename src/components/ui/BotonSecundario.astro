@@ -1,0 +1,45 @@
+---
+/** Botón secundario: transparente, borde 1px línea, texto blanco. Mismos tamaños que el primario. */
+import type { HTMLAttributes } from 'astro/types';
+import { linkWhatsapp } from '../../scripts/whatsapp';
+import Icono from './Icono.astro';
+
+interface Props extends HTMLAttributes<'a'> {
+  href?: string;
+  tamano?: 'sm' | 'md' | 'lg';
+  flecha?: boolean | 'diagonal';
+  whatsapp?: string;
+  ubicacion?: string;
+  plan?: string;
+  class?: string;
+}
+
+const { href, tamano = 'md', flecha = false, whatsapp, ubicacion, plan, class: clase, ...resto } = Astro.props;
+
+const esWhatsapp = typeof whatsapp === 'string';
+const destino = esWhatsapp ? linkWhatsapp(whatsapp) : href;
+const clases = ['btn btn-secundario', `btn-${tamano}`, clase];
+const atributosWa = esWhatsapp
+  ? {
+      target: '_blank',
+      rel: 'noopener',
+      'data-wa-mensaje': whatsapp,
+      'data-wa-ubicacion': ubicacion,
+      'data-wa-plan': plan,
+    }
+  : {};
+---
+
+{
+  destino ? (
+    <a href={destino} class:list={clases} {...atributosWa} {...resto}>
+      <slot />
+      {flecha && <Icono nombre={flecha === 'diagonal' ? 'arrow-up-right' : 'arrow-right'} tamano={16} class="flecha" />}
+    </a>
+  ) : (
+    <button type="button" class:list={clases} {...(resto as HTMLAttributes<'button'>)}>
+      <slot />
+      {flecha && <Icono nombre="arrow-right" tamano={16} class="flecha" />}
+    </button>
+  )
+}

@@ -1,0 +1,76 @@
+---
+/** Tarjeta grande del carrusel "Los más pedidos" (240px). Imagen 1:1 radio 20 en tarjeta de 28. */
+import Imagen from '../ui/Imagen.astro';
+import Icono from '../ui/Icono.astro';
+import { formatearARS } from '../../scripts/formato';
+
+interface Props {
+  producto: {
+    id: string;
+    nombre: string;
+    precio: number;
+    img: string | null;
+    variantes: { precio: number }[];
+  };
+}
+const { producto: p } = Astro.props;
+const precios = p.variantes.length ? p.variantes.map((v) => v.precio) : [p.precio];
+const minimo = Math.min(...precios);
+const desde = new Set(precios).size > 1;
+---
+
+<li class="tarjeta d-card" data-item={p.id}>
+  <button type="button" class="principal tocable" data-producto={p.id} aria-haspopup="dialog">
+    <span class="d-foto foto" data-foto>
+      {p.img && <Imagen src={p.img} alt="" width={216} height={216} />}
+    </span>
+    <span class="nombre">{p.nombre}</span>
+    <span class="precio">{desde ? 'Desde ' : ''}{formatearARS(minimo)}</span>
+  </button>
+  <button type="button" class="d-mas tocable mas" data-mas={p.id} aria-label={`Agregar ${p.nombre}`}>
+    <Icono nombre="plus" peso="bold" tamano={16} />
+  </button>
+</li>
+
+<style>
+  .tarjeta {
+    position: relative;
+    flex-shrink: 0;
+    width: 240px;
+    scroll-snap-align: start;
+  }
+  .principal {
+    display: block;
+    width: 100%;
+    padding: 12px 12px 16px;
+    border-radius: var(--r-card);
+    text-align: left;
+    cursor: pointer;
+  }
+  .foto {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: var(--r-img);
+  }
+  .nombre {
+    display: block;
+    margin-top: 12px;
+    padding-inline: 4px;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  .precio {
+    display: block;
+    margin-top: 2px;
+    padding-inline: 4px;
+    font-size: 15px;
+    color: var(--tinta-2);
+    font-variant-numeric: tabular-nums;
+  }
+  .mas {
+    position: absolute;
+    top: 176px;
+    right: 22px;
+  }
+</style>

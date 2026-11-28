@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Footer from '../components/landing/Footer.astro';
+import Nav from '../components/ui/Nav.astro';
+import site from '../data/site.json';
+import { sinCorchetes } from '../scripts/formato';
+
+const email = sinCorchetes(site.email);
+const actualizada = new Intl.DateTimeFormat('es-AR', { month: 'long', year: 'numeric' }).format(new Date());
+---
+
+<BaseLayout
+  title={`Política de privacidad · ${site.marca}`}
+  description={`Qué datos se recolectan en el sitio de ${site.marca}, para qué se usan y cómo pedir que se borren.`}
+>
+  <Nav mensaje={`Hola! Vi la web de ${site.marca} y quiero consultar por una página para mi negocio.`} base="/" />
+  <main class="seccion pt-32 md:pt-40">
+    <div class="contenedor max-w-3xl">
+      <a href="/" class="text-sm text-texto-2 underline underline-offset-4 hover:text-texto-1">← Volver al inicio</a>
+      <h1 class="h2 mt-6 max-w-none">Política de privacidad</h1>
+      <p class="meta mt-2">Última actualización: {actualizada}</p>
+
+      <div class="legal mt-8 space-y-4">
+        <h2>Quién es responsable</h2>
+        <p>
+          Este sitio es de {site.nombrePersona} ({site.marca}), {site.ciudadZona}. Para cualquier consulta sobre tus
+          datos escribime a <a href={`mailto:${email}`}>{email}</a>.
+        </p>
+
+        <h2>Qué datos se recolectan</h2>
+        <p>
+          El sitio usa Google Analytics 4 para saber cuántas personas lo visitan, desde qué tipo de dispositivo y
+          ciudad aproximada, y qué botones tocan (por ejemplo, si abrieron una demo o el botón de WhatsApp). Google
+          Analytics usa cookies y no me muestra quién sos: veo números agregados, no personas.
+        </p>
+        <p>
+          Si no querés que se mida tu visita, podés bloquear las cookies en tu navegador o instalar el
+          <a href="https://tools.google.com/dlpage/gaoptout?hl=es" target="_blank" rel="noopener">complemento de inhabilitación de Google Analytics</a>.
+        </p>
+
+        <h2>Contactos por WhatsApp y email</h2>
+        <p>
+          Cuando tocás un botón de WhatsApp se abre la app con un mensaje armado. Ese mensaje lo enviás vos desde tu
+          WhatsApp: esta web no guarda tu nombre, tu número ni lo que escribís. Lo que me mandes por WhatsApp o email
+          lo uso solo para responderte y armar tu presupuesto.
+        </p>
+
+        <h2>Demos</h2>
+        <p>
+          En las demos de pedidos y turnos, el carrito y los datos que completás (nombre, dirección, celular) se
+          guardan solo en tu propio navegador, para que no tengas que escribirlos de nuevo. No se envían a ningún
+          servidor. Podés borrarlos limpiando los datos del sitio en tu navegador.
+        </p>
+
+        <h2>Tus derechos</h2>
+        <p>
+          Podés pedirme en cualquier momento acceder, corregir o borrar los datos que me hayas enviado, escribiendo a
+          <a href={`mailto:${email}`}>{email}</a>. La Agencia de Acceso a la Información Pública, como órgano de
+          control de la Ley 25.326, atiende denuncias y reclamos sobre protección de datos personales.
+        </p>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .legal h2 {
+    padding-top: 1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  .legal a {
+    color: var(--texto-1);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+</style>

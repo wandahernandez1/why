@@ -1,0 +1,44 @@
+---
+/**
+ * Imagen que se optimiza sola (WebP, tamaño justo, 1x/2x) si el archivo está en src/assets/.
+ *   src="demos/pizzeria/muzzarella.jpg" → src/assets/demos/pizzeria/muzzarella.jpg con <Image>
+ *   src="/img/algo.jpg" o "https://…"    → <img> común (sin optimizar)
+ */
+import { Image } from 'astro:assets';
+import { buscarAsset } from '../../scripts/assets';
+
+interface Props {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  class?: string;
+  /** true solo para la imagen principal visible al cargar (LCP) */
+  prioridad?: boolean;
+  [key: string]: unknown;
+}
+
+const { src, alt, width, height, class: clase, prioridad = false, ...resto } = Astro.props;
+const local = buscarAsset(src);
+const carga = prioridad ? 'eager' : 'lazy';
+---
+
+{
+  local ? (
+    <Image
+      src={local}
+      alt={alt}
+      width={width}
+      height={height}
+      densities={[1, 2]}
+      format="webp"
+      loading={carga}
+      decoding={prioridad ? 'sync' : 'async'}
+      fetchpriority={prioridad ? 'high' : undefined}
+      class={clase}
+      {...resto}
+    />
+  ) : (
+    <img src={src} alt={alt} width={width} height={height} loading={carga} decoding="async" class={clase} {...resto} />
+  )
+}

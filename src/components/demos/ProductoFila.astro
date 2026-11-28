@@ -1,0 +1,123 @@
+---
+/**
+ * Fila de producto: texto a la izquierda + foto 88px a la derecha con el "+" encima.
+ * Toda la fila abre la hoja del producto; el "+" agrega directo si el producto es simple.
+ */
+import Imagen from '../ui/Imagen.astro';
+import Icono from '../ui/Icono.astro';
+import { formatearARS } from '../../scripts/formato';
+
+interface Props {
+  producto: {
+    id: string;
+    nombre: string;
+    descripcion: string;
+    precio: number;
+    img: string | null;
+    disponible: boolean;
+    variantes: { precio: number }[];
+  };
+}
+const { producto: p } = Astro.props;
+const precios = p.variantes.length ? p.variantes.map((v) => v.precio) : [p.precio];
+const minimo = Math.min(...precios);
+const desde = new Set(precios).size > 1;
+---
+
+<li class:list={['fila d-card', { agotado: !p.disponible }]} data-item={p.id}>
+  <button
+    type="button"
+    class="principal tocable"
+    data-producto={p.id}
+    aria-haspopup="dialog"
+    disabled={!p.disponible}
+  >
+    <span class="texto">
+      <span class="nombre">{p.nombre}</span>
+      <span class="desc">{p.descripcion}</span>
+      <span class="precio">
+        {p.disponible ? `${desde ? 'Desde ' : ''}${formatearARS(minimo)}` : <span class="badge-agotado">Agotado</span>}
+      </span>
+    </span>
+    <span class="d-foto foto" data-foto>
+      {p.img && <Imagen src={p.img} alt="" width={88} height={88} />}
+    </span>
+  </button>
+  {
+    p.disponible && (
+      <button type="button" class="d-mas tocable mas" data-mas={p.id} aria-label={`Agregar ${p.nombre}`}>
+        <Icono nombre="plus" peso="bold" tamano={16} />
+      </button>
+    )
+  }
+</li>
+
+<style>
+  .fila {
+    position: relative;
+  }
+  .principal {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    padding: 16px;
+    border-radius: var(--r-card);
+    text-align: left;
+    cursor: pointer;
+  }
+  .principal:disabled {
+    cursor: not-allowed;
+  }
+  .texto {
+    flex: 1;
+    min-width: 0;
+  }
+  .nombre {
+    display: block;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  .desc {
+    display: -webkit-box;
+    margin-top: 2px;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 14px;
+    color: var(--tinta-2);
+    line-height: 1.35;
+  }
+  .precio {
+    display: block;
+    margin-top: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .foto {
+    width: 88px;
+    height: 88px;
+    flex-shrink: 0;
+    border-radius: 16px;
+  }
+  .mas {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+  }
+  .agotado .texto,
+  .agotado .foto {
+    opacity: 0.45;
+    filter: grayscale(1);
+  }
+  .badge-agotado {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--lienzo);
+    color: var(--tinta-2);
+    font-size: 12px;
+    font-weight: 600;
+  }
+</style>

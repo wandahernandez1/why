@@ -1,0 +1,149 @@
+---
+/**
+ * Píldora flotante abajo a la izquierda: "Demo hecha por why · Quiero una así →".
+ * Se puede cerrar y no vuelve a aparecer en la sesión. No se muestra dentro del iPhone de la landing.
+ */
+import { linkWhatsapp } from '../../scripts/whatsapp';
+import Icono from '../ui/Icono.astro';
+
+interface Props {
+  mensaje: string;
+  ubicacion: string;
+}
+const { mensaje, ubicacion } = Astro.props;
+---
+
+<aside class="pildora" data-pildora-why aria-label="Sobre esta demo" hidden>
+  <a
+    href={linkWhatsapp(mensaje)}
+    target="_blank"
+    rel="noopener"
+    class="enlace"
+    data-wa-mensaje={mensaje}
+    data-wa-ubicacion={ubicacion}
+  >
+    <span class="prefijo">Demo hecha por <strong>why</strong></span><span class="sep" aria-hidden="true">·</span><span class="cta">Quiero una así →</span>
+  </a>
+  <button type="button" class="cerrar" aria-label="Cerrar aviso de demo" data-cerrar-pildora>
+    <Icono nombre="x" peso="bold" tamano={12} />
+  </button>
+</aside>
+
+<style>
+  .pildora {
+    position: fixed;
+    left: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    z-index: 39;
+    display: flex;
+    align-items: center;
+    max-width: calc(100% - 32px);
+    border-radius: 999px;
+    background: #111;
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+    font-family: var(--fuente);
+    font-size: 13px;
+    letter-spacing: -0.01em;
+    transition:
+      bottom 400ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 200ms ease;
+    --foco: #fff;
+  }
+  .pildora[hidden] {
+    display: none;
+  }
+  /* Con el carrito visible, se corre arriba */
+  :global(html.con-carrito) .pildora {
+    bottom: calc(88px + env(safe-area-inset-bottom));
+  }
+  /* Mientras se muestra el toast de "Agregado", la píldora se corre para no taparse */
+  :global(html.con-toast) .pildora {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .enlace {
+    display: flex;
+    min-width: 0;
+    padding: 10px 4px 10px 16px;
+    color: #fff;
+    white-space: nowrap;
+  }
+  /* Si no entra, se acorta el prefijo; "Quiero una así →" siempre completo */
+  .prefijo {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cta {
+    flex-shrink: 0;
+  }
+  /* Celulares angostos: entra el texto completo sin bajar de 12px */
+  @media (max-width: 400px) {
+    .pildora {
+      left: 12px;
+      max-width: calc(100% - 24px);
+      font-size: 12px;
+      letter-spacing: -0.02em;
+    }
+    .enlace {
+      padding-left: 14px;
+    }
+    .sep {
+      margin-inline: 4px;
+    }
+    .cerrar {
+      width: 28px;
+      height: 28px;
+      margin-right: 2px;
+    }
+  }
+  .enlace strong {
+    font-weight: 600;
+  }
+  .sep {
+    margin-inline: 6px;
+    opacity: 0.5;
+  }
+  .cta {
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(255, 255, 255, 0.4);
+  }
+  .cerrar {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    margin-right: 4px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.75);
+    cursor: pointer;
+  }
+  .cerrar:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+  }
+</style>
+
+<script>
+  const CLAVE = 'why:pildora-cerrada';
+  const pildora = document.querySelector<HTMLElement>('[data-pildora-why]');
+  let cerrada = false;
+  try {
+    cerrada = sessionStorage.getItem(CLAVE) === '1';
+  } catch {
+    /* sin sessionStorage: se muestra igual */
+  }
+  if (pildora && !cerrada) pildora.hidden = false;
+  pildora?.querySelector('[data-cerrar-pildora]')?.addEventListener('click', () => {
+    pildora.hidden = true;
+    try {
+      sessionStorage.setItem(CLAVE, '1');
+    } catch {
+      /* nada */
+    }
+  });
+</script>

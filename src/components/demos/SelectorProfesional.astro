@@ -1,0 +1,86 @@
+---
+/** Paso 2: profesionales (avatar 64px, nombre, especialidad) + "Cualquiera disponible". */
+import Imagen from '../ui/Imagen.astro';
+import Icono from '../ui/Icono.astro';
+
+interface Props {
+  profesionales: { id: string; nombre: string; foto: string | null; especialidad?: string }[];
+  cualquiera: { habilitado: boolean; nombre: string };
+}
+const { profesionales, cualquiera } = Astro.props;
+const iniciales = (n: string) =>
+  n
+    .split(' ')
+    .map((p) => p[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+---
+
+<ul class="grid grid-cols-2 gap-3">
+  {
+    profesionales.map((p) => (
+      <li>
+        <button type="button" class="d-eleccion vertical tocable" data-profesional={p.id} aria-pressed="false">
+          <span class="avatar">
+            {p.foto ? (
+              <Imagen src={p.foto} alt="" width={64} height={64} class="size-16 rounded-full object-cover" />
+            ) : (
+              <span class="iniciales">{iniciales(p.nombre)}</span>
+            )}
+          </span>
+          <span class="mt-3 block text-[16px] font-semibold tracking-tight">{p.nombre}</span>
+          {p.especialidad && (
+            <span class="block text-[13px]" style="color:var(--tinta-2)">
+              {p.especialidad}
+            </span>
+          )}
+        </button>
+      </li>
+    ))
+  }
+  {
+    cualquiera.habilitado && (
+      <li data-li-cualquiera>
+        <button type="button" class="d-eleccion vertical tocable" data-profesional="cualquiera" aria-pressed="false">
+          <span class="avatar">
+            <span class="iniciales">
+              <Icono nombre="users-three" tamano={28} />
+            </span>
+          </span>
+          <span class="mt-3 block text-[16px] font-semibold tracking-tight">{cualquiera.nombre}</span>
+          <span class="block text-[13px]" style="color:var(--tinta-2)">
+            Más horarios para elegir
+          </span>
+        </button>
+      </li>
+    )
+  }
+</ul>
+
+<style>
+  .avatar {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px var(--superficie), 0 0 0 3px transparent;
+    transition: box-shadow 200ms ease;
+  }
+  :global([aria-pressed='true']) > .avatar {
+    box-shadow:
+      0 0 0 3px var(--superficie),
+      0 0 0 5px var(--acento);
+  }
+  .iniciales {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--lienzo);
+    color: var(--tinta);
+    font-weight: 600;
+  }
+</style>

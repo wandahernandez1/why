@@ -1,0 +1,354 @@
+{
+  "demo": {
+    "slug": "pizzeria",
+    "mensajeInteres": "Hola! Vi la demo de la pizzería de why y quiero una web así para mi negocio"
+  },
+  "marca": {
+    "acento": "#B5D77B",
+    "textoSobreAcento": "#111111",
+    "heroImg": "demos/pizzeria/local.jpg",
+    "logoEmoji": "pizza"
+  },
+  "negocio": {
+    "nombre": "La Esquina Pizzería (DEMO)",
+    "nombreCorto": "La Esquina Pizzería",
+    "eslogan": "Pizza a la piedra desde 1998",
+    "logoTexto": "LE",
+    "whatsapp": "",
+    "direccion": "Av. Siempreviva 742",
+    "instagram": "",
+    "horarios": {
+      "lunes": null,
+      "martes": {
+        "abre": "19:00",
+        "cierra": "23:30"
+      },
+      "miercoles": {
+        "abre": "19:00",
+        "cierra": "23:30"
+      },
+      "jueves": {
+        "abre": "19:00",
+        "cierra": "23:30"
+      },
+      "viernes": {
+        "abre": "19:00",
+        "cierra": "00:30"
+      },
+      "sabado": {
+        "abre": "19:00",
+        "cierra": "00:30"
+      },
+      "domingo": {
+        "abre": "19:00",
+        "cierra": "23:30"
+      }
+    },
+    "rating": 4.8,
+    "resenas": 312,
+    "tiempoEntrega": "25–35 min",
+    "emojiMensaje": "🍕"
+  },
+  "masPedidos": [
+    "muzzarella",
+    "especial",
+    "empanada-carne",
+    "fugazzeta"
+  ],
+  "categorias": [
+    {
+      "id": "pizzas",
+      "nombre": "Pizzas",
+      "emoji": "pizza"
+    },
+    {
+      "id": "empanadas",
+      "nombre": "Empanadas",
+      "emoji": "empanada"
+    },
+    {
+      "id": "bebidas",
+      "nombre": "Bebidas",
+      "emoji": "bebida"
+    },
+    {
+      "id": "postres",
+      "nombre": "Postres",
+      "emoji": "postre"
+    }
+  ],
+  "productos": [
+    {
+      "id": "muzzarella",
+      "nombre": "Muzzarella",
+      "descripcion": "Salsa de tomate, muzzarella y aceitunas.",
+      "precio": 11000,
+      "categoria": "pizzas",
+      "disponible": true,
+      "variantes": [
+        {
+          "id": "entera",
+          "nombre": "Entera",
+          "precio": 11000
+        },
+        {
+          "id": "media",
+          "nombre": "Media",
+          "precio": 6500
+        }
+      ],
+      "adicionales": [
+        {
+          "id": "extra-muzza",
+          "nombre": "Extra muzzarella",
+          "precio": 1500
+        },
+        {
+          "id": "borde",
+          "nombre": "Borde relleno",
+          "precio": 2000
+        }
+      ],
+      "img": "demos/pizzeria/muzzarella.jpg"
+    },
+    {
+      "id": "napolitana",
+      "nombre": "Napolitana",
+      "descripcion": "Muzzarella, rodajas de tomate, ajo y albahaca.",
+      "precio": 13000,
+      "categoria": "pizzas",
+      "disponible": true,
+      "variantes": [
+        {
+          "id": "entera",
+          "nombre": "Entera",
+          "precio": 13000
+        },
+        {
+          "id": "media",
+          "nombre": "Media",
+          "precio": 7500
+        }
+      ],
+      "adicionales": [
+        {
+          "id": "extra-muzza",
+          "nombre": "Extra muzzarella",
+          "precio": 1500
+        },
+        {
+          "id": "borde",
+          "nombre": "Borde relleno",
+          "precio": 2000
+        }
+      ],
+      "img": "demos/pizzeria/napolitana.jpg"
+    },
+    {
+      "id": "fugazzeta",
+      "nombre": "Fugazzeta",
+      "descripcion": "Rellena de muzzarella con cebolla y orégano.",
+      "precio": 14500,
+      "categoria": "pizzas",
+      "disponible": true,
+      "variantes": [
+        {
+          "id": "entera",
+          "nombre": "Entera",
+          "precio": 14500
+        },
+        {
+          "id": "media",
+          "nombre": "Media",
+          "precio": 8500
+        }
+      ],
+      "adicionales": [
+        {
+          "id": "extra-muzza",
+          "nombre": "Extra muzzarella",
+          "precio": 1500
+        }
+      ],
+      "img": "demos/pizzeria/fugazzeta.jpg"
+    },
+    {
+      "id": "especial",
+      "nombre": "Especial",
+      "descripcion": "Muzzarella, jamón cocido, morrones y huevo.",
+      "precio": 15000,
+      "categoria": "pizzas",
+      "disponible": true,
+      "variantes": [
+        {
+          "id": "entera",
+          "nombre": "Entera",
+          "precio": 15000
+        },
+        {
+          "id": "media",
+          "nombre": "Media",
+          "precio": 8500
+        }
+      ],
+      "adicionales": [
+        {
+          "id": "extra-muzza",
+          "nombre": "Extra muzzarella",
+          "precio": 1500
+        },
+        {
+          "id": "borde",
+          "nombre": "Borde relleno",
+          "precio": 2000
+        }
+      ],
+      "img": "demos/pizzeria/especial.jpg"
+    },
+    {
+      "id": "empanada-carne",
+      "nombre": "Empanada de carne",
+      "descripcion": "Carne cortada a cuchillo, al horno.",
+      "precio": 1500,
+      "categoria": "empanadas",
+      "disponible": true,
+      "variantes": [],
+      "adicionales": [],
+      "img": "demos/pizzeria/empanada-carne.jpg"
+    },
+    {
+      "id": "empanada-jyq",
+      "nombre": "Empanada de jamón y queso",
+      "descripcion": "Jamón cocido y muzzarella.",
+      "precio": 1500,
+      "categoria": "empanadas",
+      "disponible": true,
+      "variantes": [],
+      "adicionales": [],
+      "img": "demos/pizzeria/empanada-jyq.jpg"
+    },
+    {
+      "id": "empanada-humita",
+      "nombre": "Empanada de humita",
+      "descripcion": "Choclo cremoso con salsa blanca.",
+      "precio": 1500,
+      "categoria": "empanadas",
+      "disponible": true,
+      "variantes": [],
+      "adicionales": [],
+      "img": "demos/pizzeria/empanada-humita.jpg"
+    },
+    {
+      "id": "gaseosa",
+      "nombre": "Gaseosa 1,5 L",
+      "descripcion": "Cola, lima-limón o naranja.",
+      "precio": 3500,
+      "categoria": "bebidas",
+      "disponible": true,
+      "variantes": [
+        {
+          "id": "cola",
+          "nombre": "Cola",
+          "precio": 3500
+        },
+        {
+          "id": "lima",
+          "nombre": "Lima-limón",
+          "precio": 3500
+        },
+        {
+          "id": "naranja",
+          "nombre": "Naranja",
+          "precio": 3500
+        }
+      ],
+      "adicionales": [],
+      "img": "demos/pizzeria/gaseosa.jpg"
+    },
+    {
+      "id": "cerveza",
+      "nombre": "Cerveza artesanal 1 L",
+      "descripcion": "Rubia o roja, de una cervecería del barrio.",
+      "precio": 5000,
+      "categoria": "bebidas",
+      "disponible": false,
+      "variantes": [],
+      "adicionales": [],
+      "img": "demos/pizzeria/cerveza.jpg"
+    },
+    {
+      "id": "flan",
+      "nombre": "Flan casero",
+      "descripcion": "Con dulce de leche o crema.",
+      "precio": 3500,
+      "categoria": "postres",
+      "disponible": true,
+      "variantes": [
+        {
+          "id": "ddl",
+          "nombre": "Con dulce de leche",
+          "precio": 3500
+        },
+        {
+          "id": "crema",
+          "nombre": "Con crema",
+          "precio": 3500
+        }
+      ],
+      "adicionales": [],
+      "img": "demos/pizzeria/flan.jpg"
+    },
+    {
+      "id": "helado",
+      "nombre": "Helado 1/4 kg",
+      "descripcion": "Hasta 2 gustos.",
+      "precio": 6000,
+      "categoria": "postres",
+      "disponible": true,
+      "variantes": [],
+      "adicionales": [],
+      "img": "demos/pizzeria/helado.jpg"
+    }
+  ],
+  "envio": {
+    "zonas": [
+      {
+        "id": "zona-1",
+        "nombre": "Zona 1",
+        "detalle": "hasta 15 cuadras",
+        "costo": 1500
+      },
+      {
+        "id": "zona-2",
+        "nombre": "Zona 2",
+        "detalle": "hasta 30 cuadras",
+        "costo": 2500
+      }
+    ],
+    "retiro": {
+      "habilitado": true,
+      "nombre": "Retiro en el local"
+    },
+    "pedidoMinimo": 8000
+  },
+  "pagos": [
+    {
+      "id": "mercadopago",
+      "nombre": "Mercado Pago",
+      "detalle": "te enviamos el link",
+      "icono": "device-mobile"
+    },
+    {
+      "id": "efectivo",
+      "nombre": "Efectivo",
+      "detalle": "",
+      "icono": "money"
+    },
+    {
+      "id": "transferencia",
+      "nombre": "Transferencia",
+      "detalle": "",
+      "icono": "bank"
+    }
+  ]
+}

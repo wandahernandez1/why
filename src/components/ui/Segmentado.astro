@@ -1,0 +1,171 @@
+---
+/**
+ * Selector segmentado tipo iOS con indicador deslizante (250ms).
+ * Accesible como pestañas: role="tablist" + flechas izq/der.
+ * Emite el evento `segmentado:cambio` (detail: { id }) en el contenedor.
+ *
+ *  tema="oscuro" → landing (vino)    tema="claro" → demos (blanco/lienzo)
+ *  controla="id-del-panel" opcional por opción (aria-controls)
+ */
+interface Opcion {
+  id: string;
+  etiqueta: string;
+  controla?: string;
+}
+interface Props {
+  opciones: Opcion[];
+  seleccionado?: string;
+  etiqueta: string;
+  /** Prefijo de los id de las pestañas (para aria-labelledby de los paneles) */
+  idBase?: string;
+  tema?: 'oscuro' | 'claro';
+  anchoCompleto?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  opciones,
+  seleccionado = opciones[0]?.id,
+  etiqueta,
+  idBase = 'seg',
+  tema = 'oscuro',
+  anchoCompleto = false,
+  class: clase,
+  ...resto
+} = Astro.props;
+const indice = Math.max(0, opciones.findIndex((o) => o.id === seleccionado));
+---
+
+<div
+  class:list={['segmentado', `tema-${tema}`, { 'ancho-completo': anchoCompleto }, clase]}
+  role="tablist"
+  aria-label={etiqueta}
+  style={`--n:${opciones.length};--i:${indice}`}
+  data-segmentado
+  {...resto}
+>
+  <span class="indicador" aria-hidden="true"></span>
+  {
+    opciones.map((o, i) => (
+      <button
+        type="button"
+        role="tab"
+        id={`${idBase}-${o.id}`}
+        aria-selected={String(i === indice)}
+        aria-controls={o.controla}
+        tabindex={i === indice ? 0 : -1}
+        data-opcion={o.id}
+      >
+        {o.etiqueta}
+      </button>
+    ))
+  }
+</div>
+
+<style>
+  .segmentado {
+    position: relative;
+    display: inline-grid;
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+    padding: 4px;
+    border-radius: var(--r-pill);
+  }
+  .ancho-completo {
+    display: grid;
+    width: 100%;
+  }
+  .indicador {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 4px;
+    width: calc((100% - 8px) / var(--n));
+    border-radius: var(--r-pill);
+    transform: translateX(calc(var(--i) * 100%));
+    transition: transform 250ms var(--ease);
+  }
+  button {
+    position: relative;
+    z-index: 1;
+    min-width: 112px;
+    height: 40px;
+    padding: 0 20px;
+    border-radius: var(--r-pill);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 250ms var(--ease);
+  }
+  .ancho-completo button {
+    min-width: 0;
+  }
+
+  /* Landing */
+  .tema-oscuro {
+    background: var(--vino-850);
+    box-shadow: inset 0 0 0 1px var(--linea);
+  }
+  .tema-oscuro .indicador {
+    background: var(--vino-800);
+    box-shadow: inset 0 0 0 1px var(--linea), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+  .tema-oscuro button {
+    color: var(--texto-2);
+  }
+  .tema-oscuro button[aria-selected='true'] {
+    color: var(--texto-1);
+  }
+
+  /* Demos */
+  .tema-claro {
+    background: var(--hairline, #ece8e9);
+  }
+  .tema-claro .indicador {
+    background: var(--superficie, #fff);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  .tema-claro button {
+    color: var(--tinta-2, #6f6a6b);
+    font-size: 15px;
+    letter-spacing: -0.01em;
+  }
+  .tema-claro button[aria-selected='true'] {
+    color: var(--tinta, #111);
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-segmentado]').forEach((grupo) => {
+    const botones = [...grupo.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+
+    const elegir = (i: number, enfocar = false) => {
+      grupo.style.setProperty('--i', String(i));
+      botones.forEach((b, j) => {
+        b.setAttribute('aria-selected', String(i === j));
+        b.tabIndex = i === j ? 0 : -1;
+      });
+      if (enfocar) botones[i].focus();
+      grupo.dispatchEvent(new CustomEvent('segmentado:cambio', { detail: { id: botones[i].dataset.opcion }, bubbles: true }));
+    };
+
+    botones.forEach((b, i) =>
+      b.addEventListener('click', () => {
+        if (b.getAttribute('aria-selected') !== 'true') elegir(i);
+      }),
+    );
+    grupo.addEventListener('keydown', (e) => {
+      const actual = botones.findIndex((b) => b.getAttribute('aria-selected') === 'true');
+      const mapa: Record<string, number> = {
+        ArrowRight: (actual + 1) % botones.length,
+        ArrowLeft: (actual - 1 + botones.length) % botones.length,
+        Home: 0,
+        End: botones.length - 1,
+      };
+      if (e.key in mapa) {
+        e.preventDefault();
+        elegir(mapa[e.key], true);
+      }
+    });
+  });
+</script>

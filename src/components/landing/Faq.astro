@@ -1,0 +1,137 @@
+---
+/** Acordeón sin cajas: separadores 1px, "+" que rota y altura animada (grid 0fr → 1fr). */
+import EncabezadoSeccion from '../ui/EncabezadoSeccion.astro';
+import Icono from '../ui/Icono.astro';
+
+const preguntas = [
+  {
+    p: '¿Tengo que dejar PedidosYa o Rappi?',
+    r: 'No tenés que dejar nada. Usá tu web para recibir pedidos directos y reservar esas comisiones.',
+  },
+  { p: '¿Quién carga el menú o los servicios?', r: 'Yo. Con una foto de tu carta alcanza.' },
+  {
+    p: '¿Qué incluye el abono?',
+    r: 'Hosting, cambios de precios y productos, y soporte por WhatsApp. Si lo das de baja, la web es tuya.',
+  },
+  { p: '¿Cómo se paga?', r: '50% para empezar y 50% al publicar, por Mercado Pago o transferencia.' },
+  { p: '¿Necesito dominio propio?', r: 'No para empezar. Si querés uno, lo registramos a tu nombre.' },
+];
+---
+
+<section id="preguntas" class="seccion" aria-labelledby="titulo-preguntas">
+  <div class="contenedor">
+    <EncabezadoSeccion
+      id="titulo-preguntas"
+      eyebrow="Preguntas"
+      titulo="Lo esencial, antes de empezar."
+      alineacion="izquierda"
+    />
+
+    <ul class="lista" data-reveal>
+      {
+        preguntas.map(({ p, r }, i) => (
+          <li class="item">
+            <h3>
+              <button
+                type="button"
+                class="pregunta"
+                aria-expanded="false"
+                aria-controls={`resp-${i}`}
+                id={`preg-${i}`}
+                data-faq={p}
+              >
+                <span>{p}</span>
+                <Icono nombre="plus" tamano={20} class="mas" />
+              </button>
+            </h3>
+            <div class="respuesta" id={`resp-${i}`} role="region" aria-labelledby={`preg-${i}`}>
+              <div class="interior">
+                <p>{r}</p>
+              </div>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  #preguntas {
+    border-top: 1px solid var(--linea);
+    background: rgba(255, 255, 255, 0.015);
+  }
+  #preguntas .contenedor {
+    position: relative;
+    z-index: 1;
+  }
+  .lista {
+    max-width: 760px;
+    margin-inline: 0;
+    border-top: 1px solid var(--linea);
+  }
+  .item {
+    border-bottom: 1px solid var(--linea);
+  }
+  .pregunta {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 24px 0;
+    text-align: left;
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--texto-1);
+    cursor: pointer;
+  }
+  .pregunta :global(.mas) {
+    flex-shrink: 0;
+    color: var(--texto-3);
+    transition:
+      transform 200ms var(--ease),
+      color 200ms var(--ease);
+  }
+  .pregunta:hover :global(.mas) {
+    color: var(--texto-1);
+  }
+  .pregunta[aria-expanded='true'] :global(.mas) {
+    transform: rotate(45deg);
+    color: var(--texto-1);
+  }
+  .respuesta {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 250ms var(--ease);
+  }
+  .respuesta .interior {
+    overflow: hidden;
+  }
+  .respuesta p {
+    padding-bottom: 24px;
+    max-width: 60ch;
+    color: var(--texto-2);
+  }
+  .item:has([aria-expanded='true']) .respuesta {
+    grid-template-rows: 1fr;
+  }
+  /* Cerrada: fuera del orden de lectura */
+  .item:not(:has([aria-expanded='true'])) .respuesta .interior {
+    visibility: hidden;
+    transition: visibility 0s 250ms;
+  }
+</style>
+
+<script>
+  import { track } from '../../scripts/analytics';
+
+  document.querySelectorAll<HTMLButtonElement>('[data-faq]').forEach((b) =>
+    b.addEventListener('click', () => {
+      const abrir = b.getAttribute('aria-expanded') !== 'true';
+      b.setAttribute('aria-expanded', String(abrir));
+      if (abrir) track('faq_open', { pregunta: b.dataset.faq });
+    }),
+  );
+</script>

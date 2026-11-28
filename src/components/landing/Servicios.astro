@@ -1,0 +1,245 @@
+---
+/**
+ * Planes 100% desde site.planes: grilla comparable de tarjetas.
+ * El toggle cambia entre inversión inicial y abono mensual (data-modo en la sección).
+ */
+import site from '../../data/site.json';
+import EncabezadoSeccion from '../ui/EncabezadoSeccion.astro';
+import TarjetaTecla from '../ui/TarjetaTecla.astro';
+import IconoCaja from '../ui/IconoCaja.astro';
+import Icono from '../ui/Icono.astro';
+import Badge from '../ui/Badge.astro';
+import Segmentado from '../ui/Segmentado.astro';
+import BotonPrimario from '../ui/BotonPrimario.astro';
+import BotonSecundario from '../ui/BotonSecundario.astro';
+import { esPlaceholder, formatearMonto, tieneValor } from '../../scripts/formato';
+
+// Ícono y nombre corto por tipo de plan (si agregás un plan nuevo, sumalo acá)
+const iconos: Record<string, string> = { landing: 'browser', turnos: 'calendar-check', takeaway: 'bag' };
+const { activa, cupos } = site.ofertaLanzamiento;
+---
+
+<section id="servicios" class="seccion" data-modo="unico" aria-labelledby="titulo-servicios">
+  <div class="contenedor">
+    <EncabezadoSeccion
+      id="titulo-servicios"
+      eyebrow="Servicios"
+      titulo="Soluciones web con precio cerrado."
+      bajada="Alcance, precio y fecha de entrega por escrito antes de empezar. Sin sorpresas al final."
+      alineacion="izquierda"
+    />
+
+    <div class="flex justify-center" data-reveal>
+      <Segmentado
+        etiqueta="Forma de pago"
+        idBase="tab-precio"
+        class="selector-precio"
+        data-precios-selector
+        opciones={[
+          { id: 'unico', etiqueta: 'Inversión inicial' },
+          { id: 'mensual', etiqueta: 'Abono mensual' },
+        ]}
+      />
+    </div>
+
+    <div class="planes mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3" data-reveal>
+      {
+        site.planes.map((plan) => (
+          <TarjetaTecla as="article" destacada={plan.destacado} class="plan flex flex-col" data-spot>
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex min-w-0 items-center gap-3">
+                <IconoCaja nombre={iconos[plan.id] ?? 'browser'} class="plan-icon" />
+                <h3 class="h3">{plan.nombre}</h3>
+              </div>
+              {plan.destacado && <Badge variante="destacado">Más elegido</Badge>}
+            </div>
+            <p class="mt-3 min-h-[3em] text-sm leading-relaxed text-texto-2">{plan.para}</p>
+
+            <div class="precio-bloque mt-6">
+              <div class="precio-unico">
+                <p class="meta">INVERSIÓN INICIAL</p>
+                {esPlaceholder(plan.precioDesde) ? (
+                  <p class="precio pendiente mt-1">A medida</p>
+                ) : (
+                  <p class="precio mt-1">$ {formatearMonto(plan.precioDesde)}</p>
+                )}
+              </div>
+              <div class="precio-mensual">
+                <p class="meta">ABONO MENSUAL</p>
+                {tieneValor(plan.abono) && !esPlaceholder(plan.abono) ? (
+                  <p class="precio mt-1">$ {formatearMonto(plan.abono)}</p>
+                ) : (
+                  <p class="precio pendiente mt-1">A consultar</p>
+                )}
+              </div>
+            </div>
+
+            <p class="plazo mt-5">
+              <span class="meta">PLAZO DE ENTREGA</span>
+              <strong>{plan.plazo}</strong>
+            </p>
+
+            <p class="meta mt-6">QUÉ INCLUYE</p>
+            <ul class="mt-3 flex-1 space-y-3">
+              {plan.incluye.map((item) => (
+                <li class="flex items-start gap-3 text-[15px] leading-snug text-texto-2">
+                  <Icono nombre="check" peso="bold" tamano={16} class="mt-0.5 shrink-0 text-verde" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+
+            <div class="mt-8">
+              {plan.destacado ? (
+                <BotonPrimario whatsapp={plan.mensajeWhatsapp} ubicacion="plan" plan={plan.id} class="w-full">
+                  Quiero este
+                </BotonPrimario>
+              ) : (
+                <BotonSecundario whatsapp={plan.mensajeWhatsapp} ubicacion="plan" plan={plan.id} class="w-full">
+                  Quiero este
+                </BotonSecundario>
+              )}
+            </div>
+          </TarjetaTecla>
+        ))
+      }
+    </div>
+
+    <div class="mt-8 flex flex-col items-center gap-3 text-center" data-reveal>
+      {
+        activa && (
+          <Badge variante="destacado">
+            Precio de lanzamiento · quedan {cupos} lugares
+          </Badge>
+        )
+      }
+      <p class="text-sm text-texto-3">
+        Pago en 2 etapas: 50% al iniciar y 50% al publicar · Mercado Pago o transferencia · Factura C
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  #servicios {
+    background:
+      radial-gradient(ellipse 32rem 20rem at 50% 100%, rgba(112, 34, 61, 0.035), transparent 70%);
+  }
+  #servicios .contenedor {
+    position: relative;
+    z-index: 1;
+  }
+  .selector-precio {
+    max-width: 100%;
+  }
+  .planes {
+    align-items: stretch;
+  }
+  .plan {
+    overflow: hidden;
+    padding: 24px;
+  }
+  @media (min-width: 768px) {
+    .plan {
+      padding: 28px;
+    }
+  }
+  .plan > * {
+    position: relative;
+    z-index: 1;
+  }
+  /* Luz que sigue al cursor: --mx / --my se actualizan desde el script de abajo */
+  .plan::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 0%), rgba(112, 34, 61, 0.09), transparent 70%);
+    transition: opacity 240ms var(--ease);
+  }
+  @media (hover: hover) {
+    .plan:hover::before {
+      opacity: 1;
+    }
+  }
+  :global(.plan.destacada)::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--vino-600);
+    z-index: 2;
+  }
+  :global(.plan-icon) {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--vino-800);
+    color: var(--verde);
+    box-shadow: none;
+  }
+  .precio-bloque {
+    display: grid;
+    gap: 16px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--linea);
+  }
+  .precio {
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--texto-1);
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+  @media (min-width: 768px) {
+    .precio {
+      font-size: 44px;
+    }
+  }
+  /* Sin datos cargados el precio se muestra como texto secundario */
+  .precio.pendiente {
+    font-size: 24px;
+    color: var(--texto-2);
+  }
+  .plazo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+  }
+  .plazo strong {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--texto-1);
+  }
+  /* Forma de pago: muestra un bloque de precio a la vez */
+  #servicios[data-modo='unico'] .precio-mensual,
+  #servicios[data-modo='mensual'] .precio-unico {
+    display: none;
+  }
+</style>
+
+<script>
+  // Efecto spotlight en las tarjetas de planes (sin dependencias)
+  document.querySelectorAll<HTMLElement>('[data-spot]').forEach((card) => {
+    card.addEventListener('pointermove', (e) => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', `${e.clientX - r.left}px`);
+      card.style.setProperty('--my', `${e.clientY - r.top}px`);
+    });
+  });
+
+  // Cambiar entre inversión inicial y abono mensual
+  const seccion = document.getElementById('servicios');
+  document.querySelector<HTMLElement>('[data-precios-selector]')?.addEventListener('segmentado:cambio', (e) => {
+    const id = (e as CustomEvent<{ id: string }>).detail.id;
+    if (seccion) seccion.dataset.modo = id;
+  });
+</script>
+

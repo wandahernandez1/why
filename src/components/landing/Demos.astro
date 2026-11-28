@@ -1,0 +1,264 @@
+---
+/** Demos en vivo: selector Pedidos/Turnos + iPhone con iframe + 3 puntos + QR. */
+import QRCode from 'qrcode';
+import EncabezadoSeccion from '../ui/EncabezadoSeccion.astro';
+import Segmentado from '../ui/Segmentado.astro';
+import Iphone from '../ui/Iphone.astro';
+import IconoCaja from '../ui/IconoCaja.astro';
+import BotonSecundario from '../ui/BotonSecundario.astro';
+
+const demos = [
+  {
+    id: 'pedidos',
+    slug: 'pizzeria',
+    href: '/demo/pizzeria',
+    titulo: 'Demo en vivo de una web de pedidos para pizzería',
+    puntos: [
+      { icono: 'images', titulo: 'Menú con fotos y adicionales', texto: 'Variantes, extras y precios que se actualizan solos.' },
+      { icono: 'shopping-cart-simple', titulo: 'Carrito y zonas de envío', texto: 'Costo por zona, retiro en el local y pedido mínimo.' },
+      { icono: 'chat-circle-text', titulo: 'El pedido te llega armado', texto: 'Por WhatsApp, con total, entrega y forma de pago.' },
+    ],
+  },
+  {
+    id: 'turnos',
+    slug: 'barberia',
+    href: '/demo/barberia',
+    titulo: 'Demo en vivo de una web de turnos para barbería',
+    puntos: [
+      { icono: 'scissors', titulo: 'Servicio, profesional y horario', texto: 'Solo muestra los horarios que de verdad están libres.' },
+      { icono: 'credit-card', titulo: 'Seña opcional con Mercado Pago', texto: 'Menos ausencias, sin cobrar de más.' },
+      { icono: 'check-circle', titulo: 'Confirmación al instante', texto: 'El turno te llega ordenado a tu WhatsApp.' },
+    ],
+  },
+  {
+    id: 'landing',
+    slug: 'landing',
+    href: '/demo/landing',
+    titulo: 'Demo personalizable de landing page comercial',
+    puntos: [
+      { icono: 'browser', titulo: 'Una página para tu marca', texto: 'Hero, servicios, portfolio, testimonios y contacto.' },
+      { icono: 'sliders-horizontal', titulo: 'Probá estilos y contenido', texto: 'Editá colores, textos, servicios e imagen principal.' },
+      { icono: 'device-mobile', titulo: 'Vista responsive', texto: 'Compará la experiencia de escritorio y celular.' },
+    ],
+  },
+  {
+    id: 'panel',
+    slug: 'admin',
+    href: '/demo/admin?negocio=pizzeria',
+    titulo: 'Demo del panel de gestión para pizzería',
+    puntos: [
+      { icono: 'receipt', titulo: 'Pedidos y turnos en un lugar', texto: 'Filtrá por estado y avanzá cada pedido con un toque.' },
+      { icono: 'squares-four', titulo: 'Resumen del día', texto: 'Ingresos, pendientes y lo más pedido, sin planillas.' },
+      { icono: 'device-mobile', titulo: 'Pensado para el celular', texto: 'Menú deslizable y botones grandes para usarlo desde el local.' },
+    ],
+  },
+];
+
+const etiquetas: Record<string, string> = { pedidos: 'Pedidos', turnos: 'Turnos', landing: 'Landing', panel: 'Panel' };
+
+// QR generados en el build (SVG inline, sin JS en el navegador)
+const qrs = await Promise.all(
+  demos.map((d) =>
+    QRCode.toString(new URL(d.href, Astro.site).href, {
+      type: 'svg',
+      margin: 0,
+      errorCorrectionLevel: 'M',
+      color: { dark: '#0B0306', light: '#EDE7E9' },
+    }),
+  ),
+);
+---
+
+<section id="demos" class="seccion" aria-labelledby="titulo-demos">
+  <div class="contenedor">
+    <EncabezadoSeccion
+      id="titulo-demos"
+      eyebrow="Demos en vivo"
+      titulo="Probala antes de decidir."
+      bajada="Hacé el recorrido como si fueras el cliente."
+      alineacion="izquierda"
+    />
+
+    <div class="flex justify-center" data-reveal>
+      <Segmentado
+        etiqueta="Tipo de demo"
+        idBase="tab-demo"
+        class="selector-demos"
+        opciones={demos.map((d) => ({
+          id: d.id,
+          etiqueta: etiquetas[d.id],
+          controla: 'panel-demos',
+        }))}
+        data-demos-selector
+      />
+    </div>
+
+    <div
+      id="panel-demos"
+      role="tabpanel"
+      aria-labelledby="tab-demo-pedidos"
+      class="panel mt-12"
+      data-demos-panel
+      data-reveal
+    >
+      <div class="flex justify-center">
+        <Iphone src={demos[0].href} titulo={demos[0].titulo} carga="visible" variante="demos" enfocable />
+      </div>
+
+      <div class="lado">
+        {
+          demos.map((d, i) => (
+            <div data-demo-info={d.id} data-href={d.href} data-titulo={d.titulo} data-slug={d.slug} hidden={i > 0}>
+              <ul class="space-y-6">
+                {d.puntos.map((p) => (
+                  <li class="flex items-start gap-4">
+                    <IconoCaja nombre={p.icono} />
+                    <div>
+                      <h3 class="text-base font-medium text-texto-1">{p.titulo}</h3>
+                      <p class="mt-1 text-[15px]">{p.texto}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+
+              <div class="mt-10 flex flex-col gap-6 sm:flex-row sm:items-center">
+                <BotonSecundario
+                  href={d.href}
+                  target="_blank"
+                  rel="noopener"
+                  flecha="diagonal"
+                  data-evento="demo_open"
+                  data-evento-params={JSON.stringify({ demo: d.slug, origen: 'pantalla_completa' })}
+                >
+                  Abrir en pantalla completa
+                </BotonSecundario>
+                <div class="hidden items-center gap-4 lg:flex">
+                  <div class="qr" set:html={qrs[i]} aria-hidden="true" />
+                  <p class="meta">
+                    ESCANEALA
+                    <br />
+                    CON TU CELULAR
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #demos {
+    border-top: 1px solid var(--linea);
+    background: rgba(255, 255, 255, 0.015);
+  }
+  #demos .contenedor {
+    position: relative;
+    z-index: 1;
+  }
+  .panel {
+    display: grid;
+    gap: 40px;
+    align-items: center;
+    padding: 28px 20px;
+    border: 1px solid var(--linea);
+    border-radius: var(--r-card-lg);
+    background:
+      radial-gradient(circle at 86% 12%, rgba(181, 215, 123, 0.06), transparent 17rem),
+      linear-gradient(145deg, #181d19 0%, #111411 100%);
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.25);
+    color: var(--texto-2);
+  }
+  @media (min-width: 1024px) {
+    .panel {
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      max-width: 1040px;
+      margin-inline: auto;
+      padding: 40px 48px;
+    }
+  }
+  /* Cuatro pestañas: se achican para que entren en celulares chicos */
+  .selector-demos {
+    max-width: 100%;
+  }
+  .selector-demos :global(button) {
+    min-width: 0;
+    padding: 0 14px;
+  }
+  @media (max-width: 359px) {
+    .selector-demos :global(button) {
+      padding: 0 6px;
+      font-size: 13px;
+    }
+  }
+  .lado {
+    width: 100%;
+    max-width: 480px;
+    margin-inline: auto;
+  }
+  .lado [data-demo-info]:not([hidden]) {
+    animation: aparecer 250ms var(--ease);
+  }
+  .lado :global(h3),
+  .lado :global(.text-texto-1) {
+    color: var(--texto-1);
+  }
+  .lado :global(p) {
+    color: var(--texto-2);
+  }
+  .lado :global(.meta) {
+    color: var(--texto-3);
+  }
+  @media (max-width: 480px) {
+    .panel :global(.iphone-demos) {
+      --ancho: min(260px, calc(100vw - 112px));
+    }
+  }
+  @keyframes aparecer {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+  .qr {
+    width: 96px;
+    height: 96px;
+    padding: 8px;
+    border-radius: 12px;
+    background: var(--niebla);
+    box-shadow: 0 0 0 1px var(--linea);
+  }
+  .qr :global(svg) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+
+<script>
+  import { cargarIframe } from '../../scripts/iphone';
+  import { track } from '../../scripts/analytics';
+
+  const selector = document.querySelector<HTMLElement>('[data-demos-selector]');
+  const panel = document.querySelector<HTMLElement>('[data-demos-panel]');
+  const telefono = panel?.querySelector<HTMLElement>('[data-iphone]');
+
+  selector?.addEventListener('segmentado:cambio', (e) => {
+    const id = (e as CustomEvent<{ id: string }>).detail.id;
+    let slug = '';
+    panel?.querySelectorAll<HTMLElement>('[data-demo-info]').forEach((info) => {
+      const activa = info.dataset.demoInfo === id;
+      info.hidden = !activa;
+      if (activa && telefono) {
+        slug = info.dataset.slug ?? '';
+        telefono.querySelector('iframe')?.setAttribute('title', info.dataset.titulo ?? '');
+        cargarIframe(telefono, info.dataset.href); // crossfade: el iframe vuelve a opacidad 1 al cargar
+      }
+    });
+    panel?.setAttribute('aria-labelledby', `tab-demo-${id}`);
+    track('demo_open', { demo: slug, origen: 'selector' });
+  });
+</script>

@@ -1,0 +1,101 @@
+---
+/**
+ * Header con foto del local (220px, radio inferior 28px, degradado), logo-emoji,
+ * nombre y una fila de píldoras translúcidas (van en el slot como <li class="pill">).
+ */
+import Imagen from '../ui/Imagen.astro';
+import Emoji from './Emoji.astro';
+
+interface Props {
+  img: string;
+  logoEmoji: string;
+  nombre: string;
+}
+const { img, logoEmoji, nombre } = Astro.props;
+---
+
+<header class="hero">
+  <Imagen src={img} alt="" width={480} height={256} prioridad class="hero-img" />
+  <div class="hero-contenido">
+    <span class="logo" aria-hidden="true"><Emoji nombre={logoEmoji} tamano={28} /></span>
+    <h1 class="hero-titulo">{nombre}</h1>
+    <ul class="hero-pills"><slot /></ul>
+  </div>
+</header>
+
+<style>
+  .hero {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+    border-radius: 0 0 28px 28px;
+    background: #2a1a12;
+  }
+  .hero :global(.hero-img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 30%, rgba(0, 0, 0, 0.72) 100%);
+  }
+  .hero-contenido {
+    position: absolute;
+    inset: auto 0 0;
+    z-index: 1;
+    padding: 0 20px 20px;
+    color: #fff;
+  }
+  .logo {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-bottom: 10px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  }
+  .hero-titulo {
+    color: #fff !important;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+  .hero-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .hero-pills :global(.pill) {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.2);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .hero-pills :global(.punto) {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #b9b4b5;
+  }
+  .hero-pills :global([data-abierto='true'] .punto) {
+    background: var(--verde);
+    box-shadow: 0 0 8px var(--verde);
+  }
+</style>

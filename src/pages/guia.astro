@@ -1,0 +1,256 @@
+---
+/**
+ * Guía para el iPhone del hero: cómo armar una web o sistema de pedidos take away.
+ * Se muestra embebida dentro del teléfono (ver Iphone.astro), por eso va sin noindex
+ * de contenido y con un diseño de una sola columna pensado para celular.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const necesitas = [
+  'Logo y 3 o 4 fotos de tus productos',
+  'La carta con precios y disponibilidad',
+  'Horarios de atención',
+  'Zonas de envío y pedido mínimo (si hacés delivery)',
+  'Tu WhatsApp para recibir pedidos',
+];
+
+const pasos = [
+  {
+    titulo: 'Cargás la carta',
+    texto: 'Categorías, productos, fotos, variantes y extras. Los precios se actualizan sin tocar código.',
+  },
+  {
+    titulo: 'Definís cómo se entrega',
+    texto: 'Retiro en el local, envío por zona con su costo, o ambos. Podés poner pedido mínimo.',
+  },
+  {
+    titulo: 'Configurás horarios y pagos',
+    texto: 'La web muestra “Abierto” o “Cerrado” sola. Efectivo, transferencia o Mercado Pago.',
+  },
+  {
+    titulo: 'Probás el recorrido',
+    texto: 'Armás un pedido como si fueras cliente, desde el celular, antes de publicar.',
+  },
+  {
+    titulo: 'Publicás con tu marca',
+    texto: 'Dominio propio y un QR para el local, la vidriera y las redes.',
+  },
+];
+
+const recorridoCliente = [
+  { titulo: 'Entra', texto: 'Desde el QR, Instagram o un link de WhatsApp.' },
+  { titulo: 'Elige', texto: 'Productos, cantidades y extras, con fotos y precios.' },
+  { titulo: 'Define', texto: 'Retiro en el local o envío a su zona, y el horario.' },
+  { titulo: 'Envía', texto: 'Se abre WhatsApp con el pedido ya armado. Listo para confirmar.' },
+];
+
+const erroresComunes = [
+  'Fotos sin luz o sin precio visible',
+  'Horarios que no coinciden con el local real',
+  'Productos agotados que siguen apareciendo',
+  'Pedir demasiados datos: nombre, teléfono y dirección alcanzan',
+];
+---
+
+<BaseLayout
+  title="Cómo armar tu web de pedidos take away"
+  description="Qué necesitás y los pasos para tener tu web de pedidos take away online."
+  noindex
+  themeColor="#0b0d0c"
+  estiloBody="background:#0b0d0c;color:#c1c9c1"
+>
+  <article class="guia">
+    <header class="cabecera">
+      <p class="eyebrow">Guía práctica</p>
+      <h1>Cómo armar tu web de pedidos take away</h1>
+      <p class="bajada">Lo que hace falta y el orden de los pasos para tenerla online en 7 a 15 días.</p>
+    </header>
+
+    <section class="bloque">
+      <h2>Qué necesitás tener listo</h2>
+      <ul class="lista">
+        {necesitas.map((n) => <li>{n}</li>)}
+      </ul>
+    </section>
+
+    <section class="bloque">
+      <h2>Los 5 pasos</h2>
+      <ol class="pasos">
+        {
+          pasos.map((p) => (
+            <li>
+              <h3>{p.titulo}</h3>
+              <p>{p.texto}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section class="bloque">
+      <h2>Cómo lo ve tu cliente</h2>
+      <ol class="pasos">
+        {
+          recorridoCliente.map((p) => (
+            <li>
+              <h3>{p.titulo}</h3>
+              <p>{p.texto}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section class="bloque">
+      <h2>Errores que conviene evitar</h2>
+      <ul class="lista">
+        {erroresComunes.map((e) => <li>{e}</li>)}
+      </ul>
+    </section>
+
+    <section class="bloque destacado">
+      <h2>Qué recibís por WhatsApp</h2>
+      <p>Cada pedido llega armado: productos, total, entrega y forma de pago. Sin comisiones por venta.</p>
+    </section>
+
+    <a class="cta" href="/#servicios" target="_top">Ver servicios</a>
+  </article>
+</BaseLayout>
+
+<style>
+  .guia {
+    min-height: 100dvh;
+    padding: 0 0 28px;
+    font-family: var(--fuente);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .cabecera {
+    padding: 64px 22px 26px;
+    background: linear-gradient(160deg, #0b0d0c 0%, #1c201d 100%);
+    color: #fffdfa;
+  }
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 14px;
+    color: rgba(245, 238, 232, 0.85);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .eyebrow::before {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--verde);
+    content: '';
+  }
+  h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+  }
+  .bajada {
+    margin: 14px 0 0;
+    color: rgba(255, 253, 250, 0.82);
+    font-size: 15px;
+  }
+  .bloque {
+    margin: 0 16px;
+    padding: 20px 18px;
+    border-radius: 18px;
+    background: var(--vino-900);
+    border: 1px solid var(--linea);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  .bloque + .bloque {
+    margin-top: 12px;
+  }
+  h2 {
+    margin: 0 0 12px;
+    color: var(--texto-1);
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .lista {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .lista li {
+    position: relative;
+    padding: 6px 0 6px 22px;
+  }
+  .lista li::before {
+    position: absolute;
+    top: 13px;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--verde);
+    content: '';
+  }
+  .pasos {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    counter-reset: paso;
+    list-style: none;
+  }
+  .pasos li {
+    position: relative;
+    padding-left: 40px;
+    counter-increment: paso;
+  }
+  .pasos li::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: grid;
+    width: 26px;
+    height: 26px;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--vino-800);
+    color: var(--verde);
+    font-size: 13px;
+    font-weight: 700;
+    content: counter(paso);
+  }
+  .pasos h3 {
+    margin: 0;
+    color: var(--texto-1);
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .pasos p,
+  .destacado p {
+    margin: 3px 0 0;
+    color: var(--texto-2);
+  }
+  .destacado {
+    background: linear-gradient(145deg, #1c201d 0%, #20291d 100%);
+  }
+  .cta {
+    display: block;
+    margin: 16px;
+    padding: 13px 16px;
+    border-radius: 999px;
+    background: var(--verde);
+    color: #10150e;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+  }
+  .cta:hover {
+    background: var(--verde-hover);
+  }
+</style>

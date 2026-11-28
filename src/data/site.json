@@ -1,0 +1,65 @@
+{
+  "marca": "WHY",
+  "nombrePersona": "[]",
+  "ciudadZona": "[Olavarria]",
+  "whatsapp": "[549XXXXXXXXXX]",
+  "email": "[tumarca.web@gmail.com]",
+  "instagram": "[https://instagram.com/tumarca]",
+  "ga4Id": "[G-XXXXXXXXXX]",
+  "moneda": "ARS",
+  "ofertaLanzamiento": {
+    "activa": true,
+    "cupos": 5,
+    "texto": "Primeros 5 clientes: precio especial a cambio de tu opinión"
+  },
+  "planes": [
+    {
+      "id": "landing",
+      "nombre": "Landing Page",
+      "para": "Profesionales, emprendimientos y campañas",
+      "precioDesde": "[PRECIO_LANDING]",
+      "abono": "[ABONO_LANDING_OPCIONAL]",
+      "plazo": "7 días",
+      "incluye": [
+        "Diseño a medida, optimizado para celular",
+        "Textos orientados a convertir visitas en consultas",
+        "Botón de WhatsApp con mensaje prearmado",
+        "Ficha en Google Maps y medición de visitas"
+      ],
+      "destacado": false,
+      "mensajeWhatsapp": "Hola! Quiero una landing page para mi negocio de ___"
+    },
+    {
+      "id": "turnos",
+      "nombre": "Web de Turnos",
+      "para": "Barberías, centros de estética, consultorios y kinesiología",
+      "precioDesde": "[PRECIO_TURNOS]",
+      "abono": "[ABONO_TURNOS]",
+      "plazo": "10 a 15 días",
+      "incluye": [
+        "Web con tu marca, servicios y profesionales",
+        "Reserva online por servicio, profesional y horario",
+        "Cada turno llega ordenado a tu WhatsApp",
+        "Seña opcional con Mercado Pago y recordatorios a clientes"
+      ],
+      "destacado": false,
+      "mensajeWhatsapp": "Hola! Tengo un/a ___ y quiero una web de turnos"
+    },
+    {
+      "id": "takeaway",
+      "nombre": "Web de Pedidos Take Away",
+      "para": "Pizzerías, hamburgueserías, viandas y panaderías",
+      "precioDesde": "[PRECIO_TAKEAWAY]",
+      "abono": "[ABONO_TAKEAWAY]",
+      "plazo": "10 a 15 días",
+      "incluye": [
+        "Menú online con fotos y adicionales",
+        "Carrito con zonas, costo de envío y pedido mínimo",
+        "Pago con Mercado Pago o efectivo, sin comisiones por venta",
+        "Pedidos armados en tu WhatsApp y QR para mesa y bolsa"
+      ],
+      "destacado": true,
+      "mensajeWhatsapp": "Hola! Tengo un/a ___ y quiero mi web de pedidos sin comisiones"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+---
+/** Badge: fondo vino-800, 12px/500, radio 6px. Variante `destacado`: tinte verde. */
+interface Props {
+  variante?: 'base' | 'destacado';
+  class?: string;
+}
+const { variante = 'base', class: clase } = Astro.props;
+---
+
+<span class:list={['badge', `badge-${variante}`, clase]}><slot /></span>
+
+<style>
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: var(--r-badge);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+  .badge-base {
+    background: var(--vino-800);
+    color: var(--texto-1);
+  }
+  .badge-destacado {
+    background: var(--verde-tinte);
+    color: var(--verde);
+  }
+</style>

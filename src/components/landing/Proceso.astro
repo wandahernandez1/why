@@ -1,0 +1,119 @@
+---
+import EncabezadoSeccion from '../ui/EncabezadoSeccion.astro';
+
+const pasos = [
+  { titulo: 'Charlamos', texto: 'Me contás qué necesitás en 15 minutos.' },
+  { titulo: 'Acordamos', texto: 'Precio final y fecha de entrega clara.' },
+  { titulo: 'Creamos', texto: 'Vos enviás el contenido. Yo hago la web.' },
+  { titulo: 'Publicamos', texto: 'Sale online y te enseño a usarla.' },
+];
+---
+
+<section id="proceso" class="seccion" aria-labelledby="titulo-proceso">
+  <div class="contenedor">
+    <EncabezadoSeccion
+      id="titulo-proceso"
+      eyebrow="Proceso"
+      titulo="De cero a online. Sin vueltas."
+      bajada="Simple, directo y con todo acordado desde el inicio."
+      alineacion="izquierda"
+    />
+
+    <ol class="pasos">
+      {
+        pasos.map((p, i) => (
+          <li class="paso" data-reveal style={`--i:${i}`}>
+            <span class:list={['numero', { primero: i === 0 }]} aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <div>
+              <h3 class="text-base font-medium text-texto-1">
+                <span class="sr-only">Paso {i + 1}: </span>
+                {p.titulo}
+              </h3>
+              <p class="mt-2 text-[15px]">{p.texto}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  #proceso {
+    border-top: 1px solid var(--linea);
+  }
+  #proceso .contenedor {
+    position: relative;
+    z-index: 1;
+  }
+  .pasos {
+    position: relative;
+    display: grid;
+    gap: 32px;
+    max-width: 1040px;
+    margin-inline: 0;
+  }
+  /* Mobile: lista vertical unida por una línea */
+  .pasos::before {
+    content: '';
+    position: absolute;
+    top: 16px;
+    bottom: 16px;
+    left: 15.5px;
+    width: 1px;
+    background: var(--linea);
+  }
+  .paso {
+    position: relative;
+    display: flex;
+    gap: 16px;
+  }
+  .numero {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--vino-900);
+    box-shadow: inset 0 0 0 1px var(--linea);
+    font-family: var(--fuente-mono);
+    font-size: 12px;
+    color: var(--texto-1);
+  }
+  .numero.primero {
+    box-shadow: inset 0 0 0 1px var(--verde);
+    color: var(--verde);
+  }
+
+  /* Tablet: 2×2 sin línea */
+  @media (min-width: 640px) {
+    .pasos {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 40px 32px;
+    }
+    .pasos::before {
+      display: none;
+    }
+    .paso {
+      flex-direction: column;
+    }
+  }
+  /* Desktop: una fila de 4 unida por una línea horizontal a la altura del número */
+  @media (min-width: 1024px) {
+    .pasos {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .pasos::before {
+      display: block;
+      top: 16px;
+      bottom: auto;
+      left: 32px;
+      right: 0;
+      width: auto;
+      height: 1px;
+    }
+  }
+</style>

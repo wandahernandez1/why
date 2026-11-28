@@ -1,0 +1,41 @@
+---
+/**
+ * Íconos Phosphor incrustados como SVG en el build (sin JS ni librería en el navegador).
+ * Nombres: https://phosphoricons.com  →  <Icono nombre="calendar-check" />
+ * Una sola familia en todo el sitio. Decorativo por defecto (aria-hidden).
+ */
+import fs from 'node:fs';
+import path from 'node:path';
+
+interface Props {
+  nombre: string;
+  peso?: 'regular' | 'light' | 'fill' | 'bold';
+  tamano?: number;
+  class?: string;
+  /** Si el ícono transmite información por sí solo, pasá una etiqueta */
+  etiqueta?: string;
+}
+
+const { nombre, peso = 'regular', tamano = 20, class: clase, etiqueta } = Astro.props;
+
+const archivo = peso === 'regular' ? `${nombre}.svg` : `${nombre}-${peso}.svg`;
+const ruta = path.join(process.cwd(), 'node_modules', '@phosphor-icons', 'core', 'assets', peso, archivo);
+if (!fs.existsSync(ruta)) throw new Error(`Icono Phosphor inexistente: "${nombre}" (${peso})`);
+
+const interior = fs
+  .readFileSync(ruta, 'utf8')
+  .replace(/^<svg[^>]*>/, '')
+  .replace(/<\/svg>\s*$/, '');
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 256 256"
+  width={tamano}
+  height={tamano}
+  fill="currentColor"
+  class={clase}
+  focusable="false"
+  {...etiqueta ? { role: 'img', 'aria-label': etiqueta } : { 'aria-hidden': 'true' }}
+  set:html={interior}
+/>

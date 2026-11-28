@@ -1,0 +1,39 @@
+---
+/**
+ * Emoji OpenMoji (CC BY-SA 4.0) servido como SVG desde public/openmoji/.
+ * Decorativo por defecto.
+ */
+interface Props {
+  nombre: string;
+  tamano?: number;
+  alt?: string;
+  class?: string;
+}
+const CODIGOS: Record<string, string> = {
+  pizza: '1F355',
+  empanada: '1F967',
+  bebida: '1F964',
+  postre: '1F370',
+  tijera: '2702',
+  barberia: '1F488',
+  barba: '1F9D4',
+  color: '1F3A8',
+  bolsa: '1F6CD',
+  exito: '2705',
+  lupa: '1F50D',
+  calendario: '1F4C5',
+};
+const { nombre, tamano = 20, alt = '', class: clase } = Astro.props;
+const codigo = CODIGOS[nombre] ?? nombre;
+---
+
+<img
+  src={`/openmoji/${codigo}.svg`}
+  width={tamano}
+  height={tamano}
+  alt={alt}
+  aria-hidden={alt ? undefined : 'true'}
+  loading="lazy"
+  decoding="async"
+  class:list={['d-emoji', clase]}
+/>
